@@ -108,6 +108,20 @@ export const authOptions: AuthOptions = {
     error: '/auth/error',
   },
   debug: true, // Enable debug mode for more detailed logs
+  callbacks: {
+    async redirect({ url, baseUrl }) {
+      // Allow callbacks to both production and development URLs
+      const allowedCallbacks = [
+        'https://lucky-bingoo.vercel.app',
+        'https://www.mybingo.reussirafrique.com',
+        baseUrl
+      ];
+      if (allowedCallbacks.some(callback => url.startsWith(callback))) {
+        return url;
+      }
+      return baseUrl;
+    }
+  }
 };
 
 const handler = NextAuth(authOptions);
