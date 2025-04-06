@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  distDir: 'build',
   images: {
     domains: ['ext.same-assets.com', 'tailwindui.com', 'images.unsplash.com', 'reussirafrique.com'],
     remotePatterns: [
