@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="50" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Bouton avec dégradé -->
+  <rect width="200" height="50" rx="8" fill="url(#button-gradient)"/>
+  
+  <!-- Effet brillant -->
+  <rect width="200" height="25" rx="8" fill="white" fill-opacity="0.1"/>
+  
+  <defs>
+    <linearGradient id="button-gradient" x1="0" y1="0" x2="200" y2="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+  </defs>
+</svg>

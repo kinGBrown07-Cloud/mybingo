@@ -1,0 +1,233 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../node_modules/.prisma/client"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  email               String        @unique @map("email")
+  passwordHash        String        @map("password_hash")
+  username            String        @unique @map("username")
+  role                UserRole      @default(USER) @map("role")
+  firstName           String?       @map("first_name")
+  lastName            String?       @map("last_name")
+  phoneNumber         String?       @map("phone_number")
+  address             String?       @map("address")
+  city                String?       @map("city")
+  country             String        @map("country")
+  postalCode          String?       @map("postal_code")
+  points              Int           @default(0) @map("points")
+  totalGamesPlayed    Int           @default(0) @map("total_games_played")
+  createdAt           DateTime      @default(now()) @map("created_at")
+  updatedAt           DateTime      @default(now()) @updatedAt @map("updated_at")
+  lastLoginAt         DateTime?     @map("last_login_at")
+  isVerified          Boolean       @default(false) @map("is_verified")
+  isActive            Boolean       @default(true) @map("is_active")
+  currency            String        @map("currency")
+  pointsRate          Float         @map("points_rate")
+  region              Region        @map("region")
+  id                  String        @id @default(uuid()) @map("id") @db.Uuid
+  verificationExpires DateTime?     @map("verification_expires")
+  verificationToken   String?       @unique @map("verification_token")
+  profile             Profile?
+  sessions            Session[]
+  transactions        Transaction[]
+  userPrizes          UserPrize[]
+
+  @@map("users")
+}
+
+model Profile {
+  id           String        @id @default(uuid()) @map("id") @db.Uuid
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at")
+  userId       String        @unique @map("user_id") @db.Uuid
+  country      String        @map("country")
+  firstName    String        @map("first_name")
+  lastName     String        @map("last_name")
+  phoneNumber  String?       @map("phone_number")
+  gameSessions GameSession[]
+  user         User          @relation(fields: [userId], references: [id])
+
+  @@map("profiles")
+}
+
+model Session {
+  token     String   @unique @map("token")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  id        String   @id @default(uuid()) @map("id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model GameSession {
+  id           String        @id @default(uuid()) @map("id") @db.Uuid
+  profileId    String        @map("profile_id") @db.Uuid
+  gameId       String        @map("game_id") @db.Uuid
+  type         GameType      @map("type")
+  points       Int           @map("points")
+  hasWon       Boolean       @default(false) @map("has_won")
+  matchedPairs Int           @default(0) @map("matched_pairs")
+  result       Json?         @map("result")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  endedAt      DateTime?     @map("ended_at")
+  cardFlips    CardFlip[]
+  game         Game          @relation(fields: [gameId], references: [id])
+  profile      Profile       @relation(fields: [profileId], references: [id])
+  transactions Transaction[]
+  userPrizes   UserPrize[]
+
+  @@map("game_sessions")
+}
+
+model Game {
+  id           String        @id @default(uuid()) @map("id") @db.Uuid
+  name         String        @map("name")
+  type         GameType      @map("type")
+  description  String?       @map("description")
+  minPoints    Int           @map("min_points")
+  maxPoints    Int           @map("max_points")
+  winRate      Float         @map("win_rate")
+  isActive     Boolean       @default(true) @map("is_active")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at")
+  gameSessions GameSession[]
+
+  @@map("games")
+}
+
+model Transaction {
+  type          TransactionType   @map("type")
+  status        TransactionStatus @default(PENDING) @map("status")
+  pointsAmount  Int               @map("points_amount")
+  createdAt     DateTime          @default(now()) @map("created_at")
+  description   String?           @map("description")
+  id            String            @id @default(uuid()) @map("id") @db.Uuid
+  userId        String            @map("user_id") @db.Uuid
+  gameSessionId String?           @map("game_session_id") @db.Uuid
+  gameSession   GameSession?      @relation(fields: [gameSessionId], references: [id])
+  user          User              @relation(fields: [userId], references: [id])
+
+  @@map("transactions")
+}
+
+model CardFlip {
+  id            String      @id @default(uuid()) @map("id") @db.Uuid
+  gameSessionId String      @map("game_session_id") @db.Uuid
+  cardIndex     Int         @map("card_index")
+  isMatched     Boolean     @default(false) @map("is_matched")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  gameSession   GameSession @relation(fields: [gameSessionId], references: [id])
+
+  @@map("card_flips")
+}
+
+model UserPrize {
+  id              String       @id @default(uuid()) @map("id") @db.Uuid
+  userId          String       @map("user_id") @db.Uuid
+  prizeId         String       @map("prize_id") @db.Uuid
+  gameSessionId   String?      @map("game_session_id") @db.Uuid
+  status          PrizeStatus  @default(PENDING) @map("status")
+  trackingNumber  String?      @map("tracking_number")
+  shippingAddress String?      @map("shipping_address")
+  claimedAt       DateTime     @default(now()) @map("claimed_at")
+  shippedAt       DateTime?    @map("shipped_at")
+  deliveredAt     DateTime?    @map("delivered_at")
+  notes           String?      @map("notes")
+  gameSession     GameSession? @relation(fields: [gameSessionId], references: [id])
+  prize           Prize        @relation(fields: [prizeId], references: [id])
+  user            User         @relation(fields: [userId], references: [id])
+
+  @@map("user_prizes")
+}
+
+model Prize {
+  id          String      @id @default(uuid()) @map("id") @db.Uuid
+  name        String      @map("name")
+  description String?     @map("description")
+  category    String      @map("category")
+  pointsCost  Int         @map("points_cost")
+  stock       Int         @default(0) @map("stock")
+  imageUrl    String?     @map("image_url")
+  isActive    Boolean     @default(true) @map("is_active")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at")
+  userPrizes  UserPrize[]
+
+  @@map("prizes")
+}
+
+model AdminTreasury {
+  id                 String   @id @default(uuid()) @map("id") @db.Uuid
+  pointsBalance      Int      @map("points_balance")
+  lastUpdated        DateTime @default(now()) @map("last_updated")
+  minRequiredBalance Int      @map("min_required_balance")
+
+  @@map("admin_treasury")
+}
+
+model DailyStat {
+  id                 String   @id @default(uuid()) @map("id") @db.Uuid
+  date               DateTime @unique @map("date")
+  totalGamesPlayed   Int      @default(0) @map("total_games_played")
+  totalPointsWagered Int      @default(0) @map("total_points_wagered")
+  totalPointsWon     Int      @default(0) @map("total_points_won")
+  totalPrizesClaimed Int      @default(0) @map("total_prizes_claimed")
+  uniquePlayers      Int      @default(0) @map("unique_players")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("daily_stats")
+}
+
+enum GameType {
+  FOODS   @map("FOODS")
+  MODE    @map("MODE")
+  JACKPOT @map("JACKPOT")
+}
+
+enum TransactionType {
+  DEPOSIT    @map("DEPOSIT")
+  WITHDRAWAL @map("WITHDRAWAL")
+  BET        @map("BET")
+  WIN        @map("WIN")
+  REFUND     @map("REFUND")
+}
+
+enum TransactionStatus {
+  PENDING   @map("PENDING")
+  COMPLETED @map("COMPLETED")
+  FAILED    @map("FAILED")
+}
+
+enum PrizeStatus {
+  PENDING   @map("PENDING")
+  SHIPPED   @map("SHIPPED")
+  DELIVERED @map("DELIVERED")
+  CANCELLED @map("CANCELLED")
+}
+
+enum UserRole {
+  USER      @map("USER")
+  ADMIN     @map("ADMIN")
+  MODERATOR @map("MODERATOR")
+}
+
+enum Region {
+  BLACK_AFRICA @map("BLACK_AFRICA")
+  NORTH_AFRICA @map("NORTH_AFRICA")
+  EUROPE       @map("EUROPE")
+  AMERICAS     @map("AMERICAS")
+  ASIA         @map("ASIA")
+}

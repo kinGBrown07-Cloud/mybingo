@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920" height="600" viewBox="0 0 1920 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond avec dégradé -->
+  <rect width="1920" height="600" fill="url(#banner-gradient)"/>
+  
+  <!-- Motif de fond -->
+  <rect width="1920" height="600" fill="url(#banner-pattern)" fill-opacity="0.1"/>
+  
+  <!-- Éléments décoratifs -->
+  <circle cx="300" cy="300" r="200" fill="url(#glow-gradient)" fill-opacity="0.3"/>
+  <circle cx="1620" cy="300" r="200" fill="url(#glow-gradient)" fill-opacity="0.3"/>
+  
+  <defs>
+    <!-- Dégradé principal -->
+    <linearGradient id="banner-gradient" x1="0" y1="0" x2="1920" y2="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1E1E1E"/>
+      <stop offset="50%" stop-color="#2D1B69"/>
+      <stop offset="100%" stop-color="#1E1E1E"/>
+    </linearGradient>
+    
+    <!-- Dégradé pour les cercles lumineux -->
+    <radialGradient id="glow-gradient" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+    </radialGradient>
+    
+    <!-- Motif de fond -->
+    <pattern id="banner-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M0 20L20 0L40 20L20 40L0 20Z" fill="#8B5CF6" fill-opacity="0.1"/>
+    </pattern>
+  </defs>
+</svg>

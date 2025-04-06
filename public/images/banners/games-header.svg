@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920" height="400" viewBox="0 0 1920 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond avec dégradé -->
+  <rect width="1920" height="400" fill="url(#games-gradient)"/>
+  
+  <!-- Sections de jeux -->
+  <g transform="translate(200, 100)">
+    <!-- Jeux de Table -->
+    <g transform="translate(0, 0)">
+      <rect width="400" height="200" rx="20" fill="#2D1B69"/>
+      <text x="200" y="100" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="24">JEUX DE TABLE</text>
+      <path d="M150 120C150 90 250 90 250 120" stroke="#8B5CF6" stroke-width="2"/>
+      <circle cx="200" cy="80" r="10" fill="#8B5CF6"/>
+    </g>
+    
+    <!-- Machines à Sous -->
+    <g transform="translate(450, 0)">
+      <rect width="400" height="200" rx="20" fill="#2D1B69"/>
+      <text x="200" y="100" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="24">MACHINES À SOUS</text>
+      <rect x="170" y="120" width="60" height="40" rx="5" stroke="#8B5CF6" stroke-width="2"/>
+      <circle cx="185" cy="140" r="5" fill="#8B5CF6"/>
+      <circle cx="215" cy="140" r="5" fill="#8B5CF6"/>
+    </g>
+    
+    <!-- Jeux Live -->
+    <g transform="translate(900, 0)">
+      <rect width="400" height="200" rx="20" fill="#2D1B69"/>
+      <text x="200" y="100" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="24">JEUX LIVE</text>
+      <circle cx="200" cy="140" r="20" stroke="#8B5CF6" stroke-width="2"/>
+      <text x="200" y="145" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-weight="bold" font-size="12">LIVE</text>
+    </g>
+  </g>
+  
+  <!-- Effet de brillance -->
+  <rect width="1920" height="200" fill="url(#shine-gradient)"/>
+  
+  <!-- Motif de fond -->
+  <rect width="1920" height="400" fill="url(#games-pattern)" fill-opacity="0.05"/>
+  
+  <defs>
+    <linearGradient id="games-gradient" x1="0" y1="0" x2="1920" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4C1D95"/>
+      <stop offset="50%" stop-color="#2D1B69"/>
+      <stop offset="100%" stop-color="#1E1E1E"/>
+    </linearGradient>
+    
+    <linearGradient id="shine-gradient" x1="960" y1="0" x2="960" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="white" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    
+    <pattern id="games-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M0 20L20 0L40 20L20 40L0 20Z" fill="#8B5CF6"/>
+    </pattern>
+  </defs>
+</svg>

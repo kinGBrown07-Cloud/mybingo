@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920" height="400" viewBox="0 0 1920 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond avec dégradé -->
+  <rect width="1920" height="400" fill="url(#community-gradient)"/>
+  
+  <!-- Section Gauche : Causes -->
+  <g transform="translate(200, 100)">
+    <rect width="400" height="200" rx="20" fill="#2D1B69"/>
+    <text x="200" y="80" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="24">JOUEZ POUR UNE CAUSE</text>
+    <!-- Icône de coeur -->
+    <path d="M180 120C180 110 190 100 200 100C210 100 220 110 220 120C220 140 200 150 200 150C200 150 180 140 180 120Z" fill="#DC2626"/>
+  </g>
+  
+  <!-- Section Centrale : Réductions -->
+  <g transform="translate(760, 100)">
+    <rect width="400" height="200" rx="20" fill="#2D1B69"/>
+    <text x="200" y="80" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="24">-40% SUR LES PACKS</text>
+    <!-- Badge de réduction -->
+    <circle cx="200" cy="130" r="30" fill="#DC2626"/>
+    <text x="200" y="135" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="16">-40%</text>
+  </g>
+  
+  <!-- Section Droite : Performance -->
+  <g transform="translate(1320, 100)">
+    <rect width="400" height="200" rx="20" fill="#2D1B69"/>
+    <text x="200" y="80" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="24">SUIVEZ VOS GAINS</text>
+    <!-- Graphique simplifié -->
+    <path d="M150 150L200 120L250 140L300 110" stroke="#8B5CF6" stroke-width="3"/>
+    <circle cx="150" cy="150" r="4" fill="#8B5CF6"/>
+    <circle cx="200" cy="120" r="4" fill="#8B5CF6"/>
+    <circle cx="250" cy="140" r="4" fill="#8B5CF6"/>
+    <circle cx="300" cy="110" r="4" fill="#8B5CF6"/>
+  </g>
+  
+  <!-- Effet de particules -->
+  <g fill="#8B5CF6" fill-opacity="0.6">
+    <circle cx="100" cy="50" r="2"/>
+    <circle cx="1820" cy="50" r="2"/>
+    <circle cx="960" cy="30" r="2"/>
+    <circle cx="500" cy="350" r="2"/>
+    <circle cx="1420" cy="350" r="2"/>
+  </g>
+  
+  <!-- Effet de brillance -->
+  <rect width="1920" height="200" fill="url(#shine-gradient)"/>
+  
+  <defs>
+    <linearGradient id="community-gradient" x1="0" y1="0" x2="1920" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4C1D95"/>
+      <stop offset="50%" stop-color="#2D1B69"/>
+      <stop offset="100%" stop-color="#1E1E1E"/>
+    </linearGradient>
+    
+    <linearGradient id="shine-gradient" x1="960" y1="0" x2="960" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="white" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>

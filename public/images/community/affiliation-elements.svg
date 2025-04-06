@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Diagramme d'affiliation -->
+  <g transform="translate(50, 50)">
+    <!-- Nœud principal (vous) -->
+    <circle cx="150" cy="50" r="40" fill="#2D1B69" stroke="#8B5CF6" stroke-width="2"/>
+    <text x="150" y="45" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-weight="bold" font-size="14">VOUS</text>
+    <text x="150" y="65" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-size="12">PARRAIN</text>
+    
+    <!-- Lignes de connexion -->
+    <path d="M150 90L75 150M150 90L150 150M150 90L225 150" 
+          stroke="#8B5CF6" stroke-width="2" stroke-dasharray="4 2"/>
+    
+    <!-- Nœuds affiliés -->
+    <g transform="translate(0, 100)">
+      <!-- Affilié 1 -->
+      <circle cx="75" cy="50" r="30" fill="#2D1B69" stroke="#8B5CF6" stroke-width="2"/>
+      <text x="75" y="55" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-size="12">+10%</text>
+      
+      <!-- Affilié 2 -->
+      <circle cx="150" cy="50" r="30" fill="#2D1B69" stroke="#8B5CF6" stroke-width="2"/>
+      <text x="150" y="55" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-size="12">+10%</text>
+      
+      <!-- Affilié 3 -->
+      <circle cx="225" cy="50" r="30" fill="#2D1B69" stroke="#8B5CF6" stroke-width="2"/>
+      <text x="225" y="55" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-size="12">+10%</text>
+    </g>
+  </g>
+  
+  <!-- Badges de bonus -->
+  <g transform="translate(50, 250)">
+    <!-- Premier gain -->
+    <g>
+      <rect width="80" height="80" rx="10" fill="#2D1B69"/>
+      <text x="40" y="35" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-weight="bold" font-size="14">1er</text>
+      <text x="40" y="55" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-weight="bold" font-size="14">GAIN</text>
+      <text x="40" y="75" text-anchor="middle" fill="#DC2626" font-family="Arial" font-weight="bold" font-size="16">+10%</text>
+    </g>
+    
+    <!-- Bonus de parrainage -->
+    <g transform="translate(100, 0)">
+      <rect width="80" height="80" rx="10" fill="#2D1B69"/>
+      <path d="M25 40C25 30 55 30 55 40" stroke="#8B5CF6" stroke-width="2"/>
+      <circle cx="40" cy="25" r="10" stroke="#8B5CF6" stroke-width="2"/>
+      <text x="40" y="65" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-weight="bold" font-size="12">BONUS</text>
+    </g>
+    
+    <!-- Gains cumulés -->
+    <g transform="translate(200, 0)">
+      <rect width="80" height="80" rx="10" fill="#2D1B69"/>
+      <text x="40" y="35" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-weight="bold" font-size="14">GAINS</text>
+      <path d="M30 50L40 40L50 50L40 60L30 50Z" fill="#F59E0B"/>
+      <text x="40" y="75" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-size="12">CUMULÉS</text>
+    </g>
+  </g>
+  
+  <!-- Étapes d'affiliation -->
+  <g transform="translate(50, 350)">
+    <!-- Inviter -->
+    <g>
+      <circle cx="40" cy="25" r="20" fill="#2D1B69"/>
+      <path d="M30 25H50M40 15V35" stroke="#8B5CF6" stroke-width="2"/>
+      <text x="40" y="55" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-size="12">INVITER</text>
+    </g>
+    
+    <!-- Jouer -->
+    <g transform="translate(100, 0)">
+      <circle cx="40" cy="25" r="20" fill="#2D1B69"/>
+      <path d="M30 25L40 15L50 25" stroke="#8B5CF6" stroke-width="2"/>
+      <text x="40" y="55" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-size="12">JOUER</text>
+    </g>
+    
+    <!-- Gagner -->
+    <g transform="translate(200, 0)">
+      <circle cx="40" cy="25" r="20" fill="#2D1B69"/>
+      <text x="40" y="30" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-weight="bold" font-size="16">€</text>
+      <text x="40" y="55" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-size="12">GAGNER</text>
+    </g>
+  </g>
+</svg>

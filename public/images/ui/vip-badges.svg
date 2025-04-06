@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Badge Standard -->
+  <g transform="translate(50, 50)">
+    <circle cx="50" cy="50" r="40" fill="#2D1B69"/>
+    <circle cx="50" cy="50" r="35" stroke="#8B5CF6" stroke-width="2"/>
+    <text x="50" y="45" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-weight="bold" font-size="14">STANDARD</text>
+    <path d="M35 60L50 45L65 60" stroke="#8B5CF6" stroke-width="2"/>
+  </g>
+  
+  <!-- Badge Premium -->
+  <g transform="translate(150, 50)">
+    <circle cx="50" cy="50" r="40" fill="#4C1D95"/>
+    <circle cx="50" cy="50" r="35" stroke="#A78BFA" stroke-width="2"/>
+    <text x="50" y="45" text-anchor="middle" fill="#A78BFA" font-family="Arial" font-weight="bold" font-size="14">PREMIUM</text>
+    <!-- Couronne simple -->
+    <path d="M35 35L50 25L65 35L60 45L40 45L35 35Z" stroke="#F59E0B" stroke-width="2"/>
+  </g>
+  
+  <!-- Badge Elite -->
+  <g transform="translate(250, 50)">
+    <circle cx="50" cy="50" r="40" fill="#5B21B6"/>
+    <circle cx="50" cy="50" r="35" stroke="#C4B5FD" stroke-width="2"/>
+    <text x="50" y="45" text-anchor="middle" fill="#C4B5FD" font-family="Arial" font-weight="bold" font-size="14">ELITE</text>
+    <!-- Couronne élaborée -->
+    <path d="M35 35L50 20L65 35L60 45L40 45L35 35Z" fill="#F59E0B"/>
+    <circle cx="40" cy="30" r="2" fill="#FCD34D"/>
+    <circle cx="50" cy="25" r="2" fill="#FCD34D"/>
+    <circle cx="60" cy="30" r="2" fill="#FCD34D"/>
+  </g>
+  
+  <!-- Avantages Standard -->
+  <g transform="translate(50, 150)">
+    <rect width="80" height="80" rx="10" fill="#2D1B69"/>
+    <!-- Support -->
+    <circle cx="40" cy="30" r="15" fill="none" stroke="#8B5CF6" stroke-width="2"/>
+    <path d="M30 30L40 40L50 30" stroke="#8B5CF6" stroke-width="2"/>
+    <!-- Bonus -->
+    <text x="40" y="65" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-weight="bold" font-size="14">+10%</text>
+  </g>
+  
+  <!-- Avantages Premium -->
+  <g transform="translate(150, 150)">
+    <rect width="80" height="80" rx="10" fill="#4C1D95"/>
+    <!-- Support 24/7 -->
+    <circle cx="40" cy="30" r="15" fill="none" stroke="#A78BFA" stroke-width="2"/>
+    <text x="40" y="35" text-anchor="middle" fill="#A78BFA" font-family="Arial" font-weight="bold" font-size="12">24/7</text>
+    <!-- Double Bonus -->
+    <text x="40" y="65" text-anchor="middle" fill="#A78BFA" font-family="Arial" font-weight="bold" font-size="14">x2</text>
+  </g>
+  
+  <!-- Avantages Elite -->
+  <g transform="translate(250, 150)">
+    <rect width="80" height="80" rx="10" fill="#5B21B6"/>
+    <!-- Manager dédié -->
+    <circle cx="40" cy="20" r="10" fill="none" stroke="#C4B5FD" stroke-width="2"/>
+    <path d="M25 40C25 30 55 30 55 40" stroke="#C4B5FD" stroke-width="2"/>
+    <!-- Triple Bonus -->
+    <text x="40" y="65" text-anchor="middle" fill="#C4B5FD" font-family="Arial" font-weight="bold" font-size="14">x3</text>
+  </g>
+  
+  <!-- Badges de réduction -->
+  <g transform="translate(50, 250)">
+    <!-- -40% Standard -->
+    <circle cx="40" cy="40" r="30" fill="#DC2626"/>
+    <text x="40" y="45" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="16">-40%</text>
+  </g>
+  
+  <!-- Badges Premium -->
+  <g transform="translate(150, 250)">
+    <!-- Tournois -->
+    <circle cx="40" cy="40" r="30" fill="#4C1D95"/>
+    <path d="M25 45L40 30L55 45" stroke="#A78BFA" stroke-width="2"/>
+    <text x="40" y="55" text-anchor="middle" fill="#A78BFA" font-family="Arial" font-weight="bold" font-size="10">VIP</text>
+  </g>
+  
+  <!-- Badges Elite -->
+  <g transform="translate(250, 250)">
+    <!-- Cadeaux -->
+    <circle cx="40" cy="40" r="30" fill="#5B21B6"/>
+    <rect x="25" y="30" width="30" height="20" rx="2" stroke="#C4B5FD" stroke-width="2"/>
+    <path d="M40 25V50M30 40H50" stroke="#C4B5FD" stroke-width="2"/>
+  </g>
+</svg>

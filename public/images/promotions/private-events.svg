@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Badge Événement Privé -->
+  <g transform="translate(50, 50)">
+    <circle cx="150" cy="150" r="100" fill="#2D1B69"/>
+    <circle cx="150" cy="150" r="95" stroke="#F59E0B" stroke-width="2"/>
+    
+    <!-- Couronne Elite -->
+    <path d="M120 80L150 60L180 80L170 100L130 100L120 80Z" fill="#F59E0B"/>
+    <circle cx="130" cy="85" r="3" fill="#FCD34D"/>
+    <circle cx="150" cy="75" r="3" fill="#FCD34D"/>
+    <circle cx="170" cy="85" r="3" fill="#FCD34D"/>
+    
+    <!-- Texte -->
+    <text x="150" y="140" text-anchor="middle" fill="#F59E0B" font-family="Arial" font-weight="bold" font-size="24">ELITE</text>
+    <text x="150" y="170" text-anchor="middle" fill="#F59E0B" font-family="Arial" font-weight="bold" font-size="18">EVENT</text>
+    
+    <!-- Étoiles décoratives -->
+    <path d="M100 120L110 130L100 140L90 130L100 120Z" fill="#F59E0B" fill-opacity="0.6"/>
+    <path d="M200 120L210 130L200 140L190 130L200 120Z" fill="#F59E0B" fill-opacity="0.6"/>
+  </g>
+  
+  <!-- Avantages Elite -->
+  <g transform="translate(50, 250)">
+    <!-- Manager Dédié -->
+    <g>
+      <circle cx="50" cy="50" r="40" fill="#2D1B69"/>
+      <circle cx="50" cy="35" r="15" stroke="#8B5CF6" stroke-width="2"/>
+      <path d="M30 65C30 50 70 50 70 65" stroke="#8B5CF6" stroke-width="2"/>
+      <text x="50" y="85" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-size="12">MANAGER</text>
+    </g>
+    
+    <!-- Cadeaux Mensuels -->
+    <g transform="translate(100, 0)">
+      <circle cx="50" cy="50" r="40" fill="#2D1B69"/>
+      <rect x="30" y="35" width="40" height="30" rx="5" stroke="#8B5CF6" stroke-width="2"/>
+      <path d="M50 30V70M35 50H65" stroke="#8B5CF6" stroke-width="2"/>
+      <text x="50" y="85" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-size="12">CADEAUX</text>
+    </g>
+    
+    <!-- Triple Bonus -->
+    <g transform="translate(200, 0)">
+      <circle cx="50" cy="50" r="40" fill="#2D1B69"/>
+      <text x="50" y="45" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-weight="bold" font-size="24">x3</text>
+      <text x="50" y="85" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-size="12">BONUS</text>
+    </g>
+  </g>
+  
+  <!-- Badges de statut -->
+  <g transform="translate(50, 350)">
+    <!-- Accès VIP -->
+    <rect width="80" height="30" rx="15" fill="#F59E0B"/>
+    <text x="40" y="20" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="12">VIP</text>
+    
+    <!-- Exclusif -->
+    <g transform="translate(100, 0)">
+      <rect width="80" height="30" rx="15" fill="#DC2626"/>
+      <text x="40" y="20" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="12">EXCLUSIF</text>
+    </g>
+    
+    <!-- Privé -->
+    <g transform="translate(200, 0)">
+      <rect width="80" height="30" rx="15" fill="#8B5CF6"/>
+      <text x="40" y="20" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="12">PRIVÉ</text>
+    </g>
+  </g>
+</svg>

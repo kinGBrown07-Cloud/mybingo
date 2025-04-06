@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond du dashboard -->
+  <rect width="1200" height="800" fill="#1E1E1E"/>
+  
+  <!-- Grille de fond -->
+  <path d="M0 100H1200M0 200H1200M0 300H1200M0 400H1200M0 500H1200M0 600H1200M0 700H1200" 
+        stroke="#2D1B69" stroke-width="1"/>
+  
+  <!-- Graphique des gains -->
+  <path d="M100 700L300 500L500 600L700 400L900 300L1100 200" 
+        stroke="#8B5CF6" stroke-width="3"/>
+  
+  <!-- Points de données -->
+  <circle cx="100" cy="700" r="6" fill="#8B5CF6"/>
+  <circle cx="300" cy="500" r="6" fill="#8B5CF6"/>
+  <circle cx="500" cy="600" r="6" fill="#8B5CF6"/>
+  <circle cx="700" cy="400" r="6" fill="#8B5CF6"/>
+  <circle cx="900" cy="300" r="6" fill="#8B5CF6"/>
+  <circle cx="1100" cy="200" r="6" fill="#8B5CF6"/>
+  
+  <!-- Statistiques communautaires -->
+  <g transform="translate(50, 50)">
+    <!-- Total des gains -->
+    <rect width="250" height="100" rx="10" fill="#2D1B69"/>
+    <text x="20" y="35" fill="#A78BFA" font-family="Arial" font-size="16">Total des gains</text>
+    <text x="20" y="70" fill="white" font-family="Arial" font-weight="bold" font-size="24">15,420€</text>
+    
+    <!-- Nombre de membres -->
+    <g transform="translate(300, 0)">
+      <rect width="250" height="100" rx="10" fill="#2D1B69"/>
+      <text x="20" y="35" fill="#A78BFA" font-family="Arial" font-size="16">Membres actifs</text>
+      <text x="20" y="70" fill="white" font-family="Arial" font-weight="bold" font-size="24">128</text>
+    </g>
+    
+    <!-- Classement -->
+    <g transform="translate(600, 0)">
+      <rect width="250" height="100" rx="10" fill="#2D1B69"/>
+      <text x="20" y="35" fill="#A78BFA" font-family="Arial" font-size="16">Classement</text>
+      <text x="20" y="70" fill="white" font-family="Arial" font-weight="bold" font-size="24">#3</text>
+    </g>
+  </g>
+  
+  <!-- Légende du graphique -->
+  <g transform="translate(100, 750)">
+    <text x="0" y="0" fill="#6B7280" font-family="Arial" font-size="12">Lun</text>
+    <text x="200" y="0" fill="#6B7280" font-family="Arial" font-size="12">Mar</text>
+    <text x="400" y="0" fill="#6B7280" font-family="Arial" font-size="12">Mer</text>
+    <text x="600" y="0" fill="#6B7280" font-family="Arial" font-size="12">Jeu</text>
+    <text x="800" y="0" fill="#6B7280" font-family="Arial" font-size="12">Ven</text>
+    <text x="1000" y="0" fill="#6B7280" font-family="Arial" font-size="12">Sam</text>
+  </g>
+</svg>

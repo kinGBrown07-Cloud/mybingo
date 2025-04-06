@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Trophée VIP -->
+  <g transform="translate(50, 50)">
+    <path d="M150 50H250M200 50V150" stroke="#F59E0B" stroke-width="4"/>
+    <circle cx="200" cy="100" r="50" fill="#2D1B69" stroke="#F59E0B" stroke-width="4"/>
+    <text x="200" y="90" text-anchor="middle" fill="#F59E0B" font-family="Arial" font-weight="bold" font-size="24">VIP</text>
+    <text x="200" y="115" text-anchor="middle" fill="#F59E0B" font-family="Arial" font-weight="bold" font-size="16">TOUR</text>
+  </g>
+  
+  <!-- Prix -->
+  <g transform="translate(50, 200)">
+    <!-- Premier prix -->
+    <g>
+      <circle cx="50" cy="50" r="40" fill="#2D1B69" stroke="#F59E0B" stroke-width="2"/>
+      <text x="50" y="40" text-anchor="middle" fill="#F59E0B" font-family="Arial" font-weight="bold" font-size="14">1er</text>
+      <text x="50" y="65" text-anchor="middle" fill="#F59E0B" font-family="Arial" font-weight="bold" font-size="18">5000€</text>
+    </g>
+    
+    <!-- Deuxième prix -->
+    <g transform="translate(100, 0)">
+      <circle cx="50" cy="50" r="40" fill="#2D1B69" stroke="#A78BFA" stroke-width="2"/>
+      <text x="50" y="40" text-anchor="middle" fill="#A78BFA" font-family="Arial" font-weight="bold" font-size="14">2e</text>
+      <text x="50" y="65" text-anchor="middle" fill="#A78BFA" font-family="Arial" font-weight="bold" font-size="18">2500€</text>
+    </g>
+    
+    <!-- Troisième prix -->
+    <g transform="translate(200, 0)">
+      <circle cx="50" cy="50" r="40" fill="#2D1B69" stroke="#8B5CF6" stroke-width="2"/>
+      <text x="50" y="40" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-weight="bold" font-size="14">3e</text>
+      <text x="50" y="65" text-anchor="middle" fill="#8B5CF6" font-family="Arial" font-weight="bold" font-size="18">1000€</text>
+    </g>
+  </g>
+  
+  <!-- Badges de statut -->
+  <g transform="translate(50, 300)">
+    <!-- En cours -->
+    <g>
+      <rect width="80" height="40" rx="20" fill="#2D1B69"/>
+      <circle cx="20" cy="20" r="8" fill="#10B981"/>
+      <text x="50" y="25" text-anchor="middle" fill="#10B981" font-family="Arial" font-size="12">LIVE</text>
+    </g>
+    
+    <!-- À venir -->
+    <g transform="translate(100, 0)">
+      <rect width="80" height="40" rx="20" fill="#2D1B69"/>
+      <circle cx="20" cy="20" r="8" fill="#F59E0B"/>
+      <text x="50" y="25" text-anchor="middle" fill="#F59E0B" font-family="Arial" font-size="12">SOON</text>
+    </g>
+    
+    <!-- Terminé -->
+    <g transform="translate(200, 0)">
+      <rect width="80" height="40" rx="20" fill="#2D1B69"/>
+      <circle cx="20" cy="20" r="8" fill="#6B7280"/>
+      <text x="50" y="25" text-anchor="middle" fill="#6B7280" font-family="Arial" font-size="12">ENDED</text>
+    </g>
+  </g>
+</svg>

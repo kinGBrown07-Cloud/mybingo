@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920" height="400" viewBox="0 0 1920 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond avec dégradé spécial -->
+  <rect width="1920" height="400" fill="url(#super-lot-gradient)"/>
+  
+  <!-- Étoiles brillantes -->
+  <g id="stars">
+    <path d="M200 100L220 120L200 140L180 120L200 100Z" fill="#F59E0B"/>
+    <path d="M1720 100L1740 120L1720 140L1700 120L1720 100Z" fill="#F59E0B"/>
+    <path d="M960 50L980 70L960 90L940 70L960 50Z" fill="#F59E0B"/>
+  </g>
+  
+  <!-- Titre SUPER-LOT -->
+  <g transform="translate(710, 150)">
+    <text x="250" y="0" text-anchor="middle" fill="url(#text-gradient)" font-family="Arial" font-weight="900" font-size="72">SUPER-LOT</text>
+    <!-- Effet de brillance sur le texte -->
+    <text x="250" y="0" text-anchor="middle" fill="white" font-family="Arial" font-weight="900" font-size="72" opacity="0.1">SUPER-LOT</text>
+  </g>
+  
+  <!-- Icônes de prix -->
+  <g transform="translate(810, 200)">
+    <!-- Trophée -->
+    <path d="M150 50H350M250 50V150M200 150H300" stroke="#F59E0B" stroke-width="4"/>
+    <circle cx="250" cy="100" r="30" fill="#F59E0B"/>
+  </g>
+  
+  <!-- Effet de particules -->
+  <g>
+    <circle cx="100" cy="200" r="2" fill="#F59E0B"/>
+    <circle cx="300" cy="150" r="2" fill="#F59E0B"/>
+    <circle cx="1620" cy="200" r="2" fill="#F59E0B"/>
+    <circle cx="1820" cy="150" r="2" fill="#F59E0B"/>
+  </g>
+  
+  <!-- Bannière de prix -->
+  <g transform="translate(760, 280)">
+    <rect width="400" height="60" rx="30" fill="#2D1B69"/>
+    <text x="200" y="38" text-anchor="middle" fill="#F59E0B" font-family="Arial" font-weight="bold" font-size="24">GAGNEZ GROS !</text>
+  </g>
+  
+  <!-- Effet de lumière -->
+  <circle cx="960" cy="200" r="300" fill="url(#glow-gradient)" fill-opacity="0.2"/>
+  
+  <defs>
+    <linearGradient id="super-lot-gradient" x1="0" y1="0" x2="1920" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#5B21B6"/>
+      <stop offset="50%" stop-color="#4C1D95"/>
+      <stop offset="100%" stop-color="#2D1B69"/>
+    </linearGradient>
+    
+    <linearGradient id="text-gradient" x1="0" y1="0" x2="0" y2="72" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+    
+    <radialGradient id="glow-gradient" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>

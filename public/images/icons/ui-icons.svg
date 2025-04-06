@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="96" height="16" viewBox="0 0 96 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 6 icônes de 16x16 -->
+  
+  <!-- Flèche droite -->
+  <path d="M4 8H12M12 8L8 4M12 8L8 12" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Croix -->
+  <path d="M20 4L28 12M28 4L20 12" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Menu burger -->
+  <path d="M36 4H44M36 8H44M36 12H44" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Plus -->
+  <path d="M52 8H60M56 4V12" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Recherche -->
+  <circle cx="72" cy="7" r="3" stroke="#8B5CF6" stroke-width="1.5"/>
+  <path d="M74 9L76 11" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Utilisateur -->
+  <circle cx="88" cy="6" r="2" stroke="#8B5CF6" stroke-width="1.5"/>
+  <path d="M84 12C84 10 86 9 88 9C90 9 92 10 92 12" stroke="#8B5CF6" stroke-width="1.5"/>
+</svg>

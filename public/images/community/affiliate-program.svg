@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="400" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond avec dégradé -->
+  <rect width="800" height="400" rx="20" fill="url(#affiliate-gradient)"/>
+  
+  <!-- Cercles connectés représentant le réseau d'affiliation -->
+  <g transform="translate(50, 150)">
+    <!-- Cercle principal (vous) -->
+    <circle cx="100" cy="100" r="40" fill="#8B5CF6"/>
+    <text x="100" y="105" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="14">VOUS</text>
+    
+    <!-- Lignes de connexion -->
+    <path d="M140 100L200 50M140 100L200 100M140 100L200 150" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="4 2"/>
+    
+    <!-- Cercles affiliés -->
+    <circle cx="220" cy="50" r="30" fill="#2D1B69" stroke="#8B5CF6" stroke-width="2"/>
+    <circle cx="220" cy="100" r="30" fill="#2D1B69" stroke="#8B5CF6" stroke-width="2"/>
+    <circle cx="220" cy="150" r="30" fill="#2D1B69" stroke="#8B5CF6" stroke-width="2"/>
+    
+    <!-- Badge 10% -->
+    <g transform="translate(300, 80)">
+      <circle cx="50" cy="50" r="40" fill="#DC2626"/>
+      <text x="50" y="45" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="24">10%</text>
+      <text x="50" y="65" text-anchor="middle" fill="white" font-family="Arial" font-size="12">BONUS</text>
+    </g>
+  </g>
+  
+  <!-- Étoiles décoratives -->
+  <path d="M700 50L720 70L700 90L680 70L700 50Z" fill="#8B5CF6" fill-opacity="0.6"/>
+  <path d="M750 300L770 320L750 340L730 320L750 300Z" fill="#8B5CF6" fill-opacity="0.6"/>
+  
+  <!-- Effet de brillance -->
+  <rect x="0" y="0" width="800" height="200" fill="url(#shine-gradient)"/>
+  
+  <defs>
+    <linearGradient id="affiliate-gradient" x1="0" y1="0" x2="800" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2D1B69"/>
+      <stop offset="100%" stop-color="#1E1E1E"/>
+    </linearGradient>
+    
+    <linearGradient id="shine-gradient" x1="400" y1="0" x2="400" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="white" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>

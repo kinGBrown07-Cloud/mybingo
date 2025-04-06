@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920" height="400" viewBox="0 0 1920 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond avec dégradé -->
+  <rect width="1920" height="400" fill="url(#promo-gradient)"/>
+  
+  <!-- Éléments décoratifs -->
+  <circle cx="200" cy="200" r="100" fill="#8B5CF6" fill-opacity="0.1"/>
+  <circle cx="1720" cy="200" r="100" fill="#8B5CF6" fill-opacity="0.1"/>
+  
+  <!-- Étoiles -->
+  <path d="M960 100L980 120L960 140L940 120L960 100Z" fill="#8B5CF6"/>
+  <path d="M860 200L880 220L860 240L840 220L860 200Z" fill="#8B5CF6" fill-opacity="0.6"/>
+  <path d="M1060 200L1080 220L1060 240L1040 220L1060 200Z" fill="#8B5CF6" fill-opacity="0.6"/>
+  
+  <!-- Ligne décorative -->
+  <path d="M400 200H1520" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="10 5"/>
+  
+  <defs>
+    <linearGradient id="promo-gradient" x1="0" y1="0" x2="1920" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2D1B69"/>
+      <stop offset="50%" stop-color="#1E1E1E"/>
+      <stop offset="100%" stop-color="#2D1B69"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Badge hexagonal -->
+  <path d="M100 20L165 60V140L100 180L35 140V60L100 20Z" fill="#2D1B69" stroke="#8B5CF6" stroke-width="4"/>
+  
+  <!-- Cercle intérieur -->
+  <circle cx="100" cy="100" r="50" fill="#1E1E1E" stroke="#8B5CF6" stroke-width="2"/>
+  
+  <!-- Étoile centrale -->
+  <path d="M100 60L115 85L140 90L120 110L125 135L100 125L75 135L80 110L60 90L85 85L100 60Z" fill="#8B5CF6"/>
+  
+  <!-- Points décoratifs -->
+  <circle cx="100" cy="40" r="5" fill="#8B5CF6"/>
+  <circle cx="160" cy="100" r="5" fill="#8B5CF6"/>
+  <circle cx="100" cy="160" r="5" fill="#8B5CF6"/>
+  <circle cx="40" cy="100" r="5" fill="#8B5CF6"/>
+  
+  <!-- Effet brillant -->
+  <path d="M100 20L165 60L160 65L100 25L40 65L35 60L100 20Z" fill="white" fill-opacity="0.2"/>
+</svg>

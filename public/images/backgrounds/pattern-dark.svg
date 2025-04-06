@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Motif de fond répétitif -->
+  <defs>
+    <pattern id="casino-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+      <!-- Symboles de cartes -->
+      <path d="M10 50L20 40L10 30L0 40L10 50Z" fill="#8B5CF6" fill-opacity="0.1"/>
+      <path d="M50 10C45 10 40 15 40 20C40 25 45 30 50 30C55 30 60 25 60 20C60 15 55 10 50 10Z" fill="#8B5CF6" fill-opacity="0.1"/>
+      <path d="M80 50L90 60L80 70L70 60L80 50Z" fill="#8B5CF6" fill-opacity="0.1"/>
+      <path d="M50 70C45 70 40 75 40 80C40 85 45 90 50 90C55 90 60 85 60 80C60 75 55 70 50 70Z" fill="#8B5CF6" fill-opacity="0.1"/>
+    </pattern>
+  </defs>
+  
+  <!-- Application du motif -->
+  <rect width="400" height="400" fill="url(#casino-pattern)"/>
+</svg>

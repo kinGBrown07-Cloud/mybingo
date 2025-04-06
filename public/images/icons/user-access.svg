@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="96" height="48" viewBox="0 0 96 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Connexion -->
+  <g transform="translate(8, 8)">
+    <rect width="32" height="32" rx="16" fill="#2D1B69"/>
+    <!-- Icône de profil -->
+    <circle cx="16" cy="12" r="4" stroke="#8B5CF6" stroke-width="1.5"/>
+    <path d="M10 24C10 20 12 18 16 18C20 18 22 20 22 24" stroke="#8B5CF6" stroke-width="1.5"/>
+    <!-- Flèche d'entrée -->
+    <path d="M16 14L19 17L16 20" stroke="#8B5CF6" stroke-width="1.5"/>
+  </g>
+  
+  <!-- Inscription -->
+  <g transform="translate(56, 8)">
+    <rect width="32" height="32" rx="16" fill="#2D1B69"/>
+    <!-- Icône de profil -->
+    <circle cx="16" cy="12" r="4" stroke="#8B5CF6" stroke-width="1.5"/>
+    <path d="M10 24C10 20 12 18 16 18C20 18 22 20 22 24" stroke="#8B5CF6" stroke-width="1.5"/>
+    <!-- Symbole plus -->
+    <path d="M16 8V16M12 12H20" stroke="#DC2626" stroke-width="1.5"/>
+  </g>
+</svg>

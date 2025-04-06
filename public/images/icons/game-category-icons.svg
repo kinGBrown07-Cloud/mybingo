@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="192" height="48" viewBox="0 0 192 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 4 icônes de 48x48 -->
+  
+  <!-- Slots -->
+  <rect x="4" y="8" width="40" height="32" rx="4" stroke="#8B5CF6" stroke-width="2"/>
+  <circle cx="16" cy="24" r="6" stroke="#8B5CF6" stroke-width="2"/>
+  <circle cx="32" cy="24" r="6" stroke="#8B5CF6" stroke-width="2"/>
+  
+  <!-- Roulette -->
+  <circle cx="72" cy="24" r="20" stroke="#8B5CF6" stroke-width="2"/>
+  <path d="M72 4V44M52 24H92" stroke="#8B5CF6" stroke-width="2"/>
+  <circle cx="72" cy="24" r="4" fill="#8B5CF6"/>
+  
+  <!-- Cartes -->
+  <rect x="100" y="8" width="32" height="40" rx="4" stroke="#8B5CF6" stroke-width="2"/>
+  <path d="M108 16H124M108 24H124M108 32H124" stroke="#8B5CF6" stroke-width="2"/>
+  
+  <!-- Dés -->
+  <rect x="148" y="12" width="24" height="24" rx="4" stroke="#8B5CF6" stroke-width="2"/>
+  <circle cx="156" cy="20" r="2" fill="#8B5CF6"/>
+  <circle cx="164" cy="20" r="2" fill="#8B5CF6"/>
+  <circle cx="156" cy="28" r="2" fill="#8B5CF6"/>
+  <circle cx="164" cy="28" r="2" fill="#8B5CF6"/>
+</svg>

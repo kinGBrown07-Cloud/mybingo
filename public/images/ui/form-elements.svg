@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Champs de formulaire -->
+  <g transform="translate(50, 50)">
+    <!-- Champ Email -->
+    <g>
+      <rect width="300" height="50" rx="8" fill="#2D1B69"/>
+      <path d="M20 25L30 32L40 25M15 22V38H45V22H15Z" stroke="#8B5CF6" stroke-width="1.5"/>
+      <text x="60" y="30" fill="#6B7280" font-family="Arial" font-size="14">Email</text>
+    </g>
+    
+    <!-- Champ Mot de passe -->
+    <g transform="translate(0, 70)">
+      <rect width="300" height="50" rx="8" fill="#2D1B69"/>
+      <path d="M20 35C20 25 30 25 30 35M15 35H45V45H15V35Z" stroke="#8B5CF6" stroke-width="1.5"/>
+      <text x="60" y="30" fill="#6B7280" font-family="Arial" font-size="14">Mot de passe</text>
+    </g>
+    
+    <!-- Bouton Se connecter -->
+    <g transform="translate(0, 140)">
+      <rect width="300" height="50" rx="8" fill="#8B5CF6"/>
+      <text x="150" y="30" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="16">SE CONNECTER</text>
+    </g>
+  </g>
+  
+  <!-- Séparateur -->
+  <g transform="translate(50, 270)">
+    <line x1="0" y1="0" x2="300" y2="0" stroke="#2D1B69" stroke-width="2"/>
+    <circle cx="150" cy="0" r="20" fill="#1E1E1E"/>
+    <text x="150" y="5" text-anchor="middle" fill="#6B7280" font-family="Arial" font-size="14">OU</text>
+  </g>
+  
+  <!-- Boutons sociaux -->
+  <g transform="translate(50, 300)">
+    <!-- Google -->
+    <g>
+      <rect width="140" height="50" rx="8" fill="#2D1B69"/>
+      <circle cx="30" cy="25" r="15" fill="white"/>
+      <text x="85" y="30" text-anchor="middle" fill="white" font-family="Arial" font-size="14">Google</text>
+    </g>
+    
+    <!-- Facebook -->
+    <g transform="translate(160, 0)">
+      <rect width="140" height="50" rx="8" fill="#2D1B69"/>
+      <rect x="15" y="10" width="30" height="30" rx="4" fill="#1877F2"/>
+      <text x="85" y="30" text-anchor="middle" fill="white" font-family="Arial" font-size="14">Facebook</text>
+    </g>
+  </g>
+</svg>
