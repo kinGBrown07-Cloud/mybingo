@@ -9,43 +9,150 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      profiles: {
+      users: {
         Row: {
           id: string
           email: string
+          password_hash: string
           username: string
+          role: string
+          first_name: string | null
+          last_name: string | null
+          phone_number: string | null
+          address: string | null
+          city: string | null
+          country: string
+          postal_code: string | null
+          points: number
+          total_games_played: number
+          created_at: string
+          updated_at: string
+          last_login_at: string | null
+          is_verified: boolean
+          is_active: boolean
+          currency: string
+          points_rate: number
+          region: string
+          verification_expires: string | null
+          verification_token: string | null
+        }
+        Insert: {
+          id?: string
+          email: string
+          password_hash: string
+          username: string
+          role?: string
+          first_name?: string | null
+          last_name?: string | null
+          phone_number?: string | null
+          address?: string | null
+          city?: string | null
+          country: string
+          postal_code?: string | null
+          points?: number
+          total_games_played?: number
+          created_at?: string
+          updated_at?: string
+          last_login_at?: string | null
+          is_verified?: boolean
+          is_active?: boolean
+          currency: string
+          points_rate?: number
+          region: string
+          verification_expires?: string | null
+          verification_token?: string | null
+        }
+        Update: {
+          id?: string
+          email?: string
+          password_hash?: string
+          username?: string
+          role?: string
+          first_name?: string | null
+          last_name?: string | null
+          phone_number?: string | null
+          address?: string | null
+          city?: string | null
+          country?: string
+          postal_code?: string | null
+          points?: number
+          total_games_played?: number
+          created_at?: string
+          updated_at?: string
+          last_login_at?: string | null
+          is_verified?: boolean
+          is_active?: boolean
+          currency?: string
+          points_rate?: number
+          region?: string
+          verification_expires?: string | null
+          verification_token?: string | null
+        }
+      }
+      profiles: {
+        Row: {
+          id: string
+          user_id: string
+          username: string
+          first_name: string
+          last_name: string
+          phone_number: string | null
+          birthdate: string | null
+          country: string
+          region: string
+          currency: string
           coins: number
           points: number
+          points_rate: number
           vip_level_id: string | null
           referrer_id: string | null
-          role: 'USER' | 'ADMIN'
-          is_active: boolean
+          terms_accepted: boolean
+          terms_accepted_at: string | null
+          referral_code: string | null
           created_at: string
           updated_at: string
         }
         Insert: {
-          id: string
-          email: string
+          id?: string
+          user_id: string
           username: string
+          first_name: string
+          last_name: string
+          phone_number?: string | null
+          birthdate?: string | null
+          country: string
+          region: string
+          currency: string
           coins?: number
           points?: number
+          points_rate?: number
           vip_level_id?: string | null
           referrer_id?: string | null
-          role?: 'USER' | 'ADMIN'
-          is_active?: boolean
+          terms_accepted: boolean
+          terms_accepted_at?: string | null
+          referral_code?: string | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
-          email?: string
+          user_id?: string
           username?: string
+          first_name?: string
+          last_name?: string
+          phone_number?: string | null
+          birthdate?: string | null
+          country?: string
+          region?: string
+          currency?: string
           coins?: number
           points?: number
+          points_rate?: number
           vip_level_id?: string | null
           referrer_id?: string | null
-          role?: 'USER' | 'ADMIN'
-          is_active?: boolean
+          terms_accepted?: boolean
+          terms_accepted_at?: string | null
+          referral_code?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -54,63 +161,60 @@ export interface Database {
         Row: {
           id: string
           user_id: string
-          game_type: GameType
+          game_type: string
           bet_amount: number
-          prize: number | null
-          has_won: boolean
           use_coins: boolean
+          has_won: boolean
+          matched_pairs: number
+          result: Json | null
           created_at: string
-          completed_at: string | null
+          ended_at: string | null
         }
         Insert: {
           id?: string
           user_id: string
-          game_type: GameType
+          game_type: string
           bet_amount: number
-          prize?: number | null
-          has_won?: boolean
           use_coins: boolean
+          has_won?: boolean
+          matched_pairs?: number
+          result?: Json | null
           created_at?: string
-          completed_at?: string | null
+          ended_at?: string | null
         }
         Update: {
           id?: string
           user_id?: string
-          game_type?: GameType
+          game_type?: string
           bet_amount?: number
-          prize?: number | null
-          has_won?: boolean
           use_coins?: boolean
+          has_won?: boolean
+          matched_pairs?: number
+          result?: Json | null
           created_at?: string
-          completed_at?: string | null
+          ended_at?: string | null
         }
       }
       card_flips: {
         Row: {
           id: string
-          session_id: string
+          game_session_id: string
           card_index: number
-          is_winning: boolean
-          prize: number | null
-          points_earned: number
+          is_matched: boolean
           created_at: string
         }
         Insert: {
           id?: string
-          session_id: string
+          game_session_id: string
           card_index: number
-          is_winning: boolean
-          prize?: number | null
-          points_earned?: number
+          is_matched?: boolean
           created_at?: string
         }
         Update: {
           id?: string
-          session_id?: string
+          game_session_id?: string
           card_index?: number
-          is_winning?: boolean
-          prize?: number | null
-          points_earned?: number
+          is_matched?: boolean
           created_at?: string
         }
       }
@@ -118,38 +222,32 @@ export interface Database {
         Row: {
           id: string
           user_id: string
-          type: TransactionType
-          amount: number
-          coins_amount: number
-          status: TransactionStatus
-          session_id: string | null
-          note: string | null
+          type: string
+          status: string
+          points_amount: number
           created_at: string
-          updated_at: string
+          description: string | null
+          game_session_id: string | null
         }
         Insert: {
           id?: string
           user_id: string
-          type: TransactionType
-          amount: number
-          coins_amount: number
-          status?: TransactionStatus
-          session_id?: string | null
-          note?: string | null
+          type: string
+          status?: string
+          points_amount: number
           created_at?: string
-          updated_at?: string
+          description?: string | null
+          game_session_id?: string | null
         }
         Update: {
           id?: string
           user_id?: string
-          type?: TransactionType
-          amount?: number
-          coins_amount?: number
-          status?: TransactionStatus
-          session_id?: string | null
-          note?: string | null
+          type?: string
+          status?: string
+          points_amount?: number
           created_at?: string
-          updated_at?: string
+          description?: string | null
+          game_session_id?: string | null
         }
       }
       referrals: {
@@ -329,9 +427,11 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
-      game_type: GameType
-      transaction_type: TransactionType
-      transaction_status: TransactionStatus
+      user_role: 'USER' | 'ADMIN' | 'MODERATOR'
+      game_type: 'FOODS' | 'MODE' | 'JACKPOT'
+      transaction_type: 'DEPOSIT' | 'WITHDRAWAL' | 'BET' | 'WIN' | 'REFUND'
+      transaction_status: 'PENDING' | 'COMPLETED' | 'FAILED'
+      region: 'BLACK_AFRICA' | 'NORTH_AFRICA' | 'EUROPE' | 'AMERICAS' | 'ASIA'
     }
   }
 }

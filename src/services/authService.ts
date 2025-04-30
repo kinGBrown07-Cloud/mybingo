@@ -1,8 +1,8 @@
 'use client';
 
-import { authOptions } from '@/lib/auth';
-import { cookieHelper } from '@/lib/client-cookies';
-import { prisma } from '@/lib/db';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import type { Database } from '@/types/database';
+import type { User } from '@supabase/supabase-js';
 
 // Types pour les énumérations
 export enum Region {
@@ -60,7 +60,7 @@ export interface RegistrationData {
   referralCode?: string;
 }
 
-// Interface pour la réponse d'inscription/connexion
+// Interface pour la réponse d'authentification
 export interface AuthResult {
   success: boolean;
   message: string;
@@ -69,20 +69,21 @@ export interface AuthResult {
   userId?: string;
 }
 
+const supabase = createClientComponentClient<Database>();
+
 /**
  * Vérifie si un email est déjà utilisé
  */
 async function isEmailInUse(email: string): Promise<boolean> {
   try {
-    const response = await fetch('/api/auth/check-email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email }),
-    });
-    const data = await response.json();
-    return data.exists;
+    const { data, error } = await supabase
+      .from('users')
+      .select('email')
+      .eq('email', email)
+      .single();
+
+    if (error) throw error;
+    return !!data;
   } catch (error) {
     console.error('Error checking email:', error);
     return false;
@@ -102,30 +103,58 @@ export async function registerUser(data: RegistrationData): Promise<AuthResult> 
       };
     }
 
-    const response = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
+    // Créer l'utilisateur dans Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
+      options: {
+        data: {
+          first_name: data.firstName,
+          last_name: data.lastName,
+          phone_number: data.phoneNumber,
+          birthdate: data.birthdate,
+          country: data.country,
+          region: data.region,
+          currency: data.currency,
+          is_over_18: data.isOver18,
+          accept_terms: data.acceptTerms,
+          referral_code: data.referralCode
+        }
+      }
     });
 
-    const result = await response.json();
+    if (authError) throw authError;
 
-    if (!response.ok) {
-      return {
-        success: false,
-        message: result.error || 'Une erreur est survenue lors de l\'inscription',
-      };
-    }
+    // Créer le profil utilisateur
+    const { data: profileData, error: profileError } = await supabase
+      .from('profiles')
+      .insert({
+        user_id: authData.user?.id,
+        username: `${data.firstName.toLowerCase()}.${data.lastName.toLowerCase()}`,
+        first_name: data.firstName,
+        last_name: data.lastName,
+        phone_number: data.phoneNumber,
+        birthdate: data.birthdate,
+        country: data.country,
+        region: data.region,
+        currency: data.currency,
+        coins: 0,
+        points: 0,
+        points_rate: 1.0,
+        terms_accepted: data.acceptTerms,
+        terms_accepted_at: new Date().toISOString(),
+        referral_code: data.referralCode
+      })
+      .select()
+      .single();
 
-    // Sauvegarder le token
-    cookieHelper.setAuthCookie(result.token);
+    if (profileError) throw profileError;
 
     return {
       success: true,
       message: 'Inscription réussie',
-      profile: result.profile,
+      profile: profileData,
+      userId: authData.user?.id
     };
   } catch (error) {
     console.error('Register error:', error);
@@ -141,51 +170,34 @@ export async function registerUser(data: RegistrationData): Promise<AuthResult> 
  */
 export async function loginUser(email: string, password: string): Promise<AuthResult> {
   try {
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-      credentials: 'include'
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
     });
 
-    const result = await response.json();
+    if (error) throw error;
 
-    if (!response.ok) {
-      return {
-        success: false,
-        message: result.error || 'Email ou mot de passe incorrect',
-      };
-    }
+    // Récupérer le profil utilisateur
+    const { data: profileData, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', data.user.id)
+      .single();
 
-    // Sauvegarder le token
-    if (result.token) {
-      cookieHelper.setAuthCookie(result.token);
-    }
-
-    // Vérifier que le profil est présent
-    if (!result.profile) {
-      return {
-        success: false,
-        message: 'Profil non trouvé',
-      };
-    }
-
-    // Redirection après connexion réussie
-    window.location.href = '/dashboard';
+    if (profileError) throw profileError;
 
     return {
       success: true,
       message: 'Connexion réussie',
-      profile: result.profile,
-      authenticated: true
+      profile: profileData,
+      authenticated: true,
+      userId: data.user.id
     };
   } catch (error) {
     console.error('Login error:', error);
     return {
       success: false,
-      message: 'Une erreur est survenue lors de la connexion',
+      message: 'Email ou mot de passe incorrect',
     };
   }
 }
@@ -195,10 +207,7 @@ export async function loginUser(email: string, password: string): Promise<AuthRe
  */
 export async function logoutUser(): Promise<void> {
   try {
-    await fetch('/api/auth/logout', {
-      method: 'POST',
-    });
-    cookieHelper.removeAuthCookie();
+    await supabase.auth.signOut();
   } catch (error) {
     console.error('Logout error:', error);
   }
@@ -208,29 +217,10 @@ export async function logoutUser(): Promise<void> {
  * Vérifie si un utilisateur est authentifié
  */
 export async function isAuthenticated(): Promise<AuthResult> {
-  const token = cookieHelper.getAuthCookie();
-  if (!token) {
-    return {
-      success: false,
-      message: 'Non authentifié',
-      authenticated: false
-    };
-  }
-
   try {
-    const response = await fetch('/api/auth/me', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include'
-    });
+    const { data: { user }, error } = await supabase.auth.getUser();
     
-    const result = await response.json();
-
-    if (!response.ok) {
-      cookieHelper.removeAuthCookie();
+    if (error || !user) {
       return {
         success: false,
         message: 'Non authentifié',
@@ -238,8 +228,13 @@ export async function isAuthenticated(): Promise<AuthResult> {
       };
     }
 
-    if (!result.profile) {
-      cookieHelper.removeAuthCookie();
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+
+    if (profileError) {
       return {
         success: false,
         message: 'Profil non trouvé',
@@ -250,41 +245,35 @@ export async function isAuthenticated(): Promise<AuthResult> {
     return {
       success: true,
       message: 'Authentifié',
+      profile,
       authenticated: true,
-      profile: result.profile,
-      userId: result.profile.userId
+      userId: user.id
     };
   } catch (error) {
     console.error('Auth check error:', error);
-    cookieHelper.removeAuthCookie();
     return {
       success: false,
-      message: 'Une erreur est survenue lors de la vérification de l\'authentification',
+      message: 'Erreur de vérification d\'authentification',
       authenticated: false
     };
   }
 }
 
 /**
- * Récupère les informations du profil utilisateur
+ * Récupère le profil d'un utilisateur
  */
 export async function getUserProfile(userId: string): Promise<UserProfile | null> {
   try {
-    const token = cookieHelper.getAuthCookie();
-    if (!token) {
-      return null;
-    }
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
 
-    const response = await fetch('/api/auth/profile');
-    const result = await response.json();
-
-    if (!response.ok) {
-      return null;
-    }
-
-    return result.profile;
+    if (error) throw error;
+    return data;
   } catch (error) {
-    console.error('Get profile error:', error);
+    console.error('Error fetching user profile:', error);
     return null;
   }
 }

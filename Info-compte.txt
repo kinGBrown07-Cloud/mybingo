@@ -1,0 +1,69 @@
+Nouveau compte Supabase officiel pour bingoo:
+GitHub : royalmiky07@gmail.com
+Organization: bingoo
+project name: bingoo
+database password: BX0BjDepI9F90Eg8
+Region: Central EU
+Organization Slug: fanmvjsctaxgpslgufxu
+project ID: ykvtrdxzhemzegoqzzjy
+project URL: https://ykvtrdxzhemzegoqzzjy.supabase.co
+
+anon public: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrdnRyZHh6aGVtemVnb3F6emp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU5OTE2MDcsImV4cCI6MjA2MTU2NzYwN30.wxziyfjun69Lirx9cRPDGnu73lVC4Aq7jsV0gFqrWRg
+
+service_role secret: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrdnRyZHh6aGVtemVnb3F6emp5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NTk5MTYwNywiZXhwIjoyMDYxNTY3NjA3fQ.3pgtooZFdTzHIojaAeTOjraWTDLrVtWQBojsrP5ZVGw
+
+JWT Secret: MyJWAlqt2zUIgX31Uv4KlSMrOlHffe2V6mt4lSsg8XS+QHHtIsIg01A47CGZo6hXJHDWq10UKgR0vLmebLePvw==
+
+shared pooler: 
+postgresql://postgres.ykvtrdxzhemzegoqzzjy:[BX0BjDepI9F90Eg8]@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
+
+
+.env.local:
+
+NEXT_PUBLIC_SUPABASE_URL=https://ykvtrdxzhemzegoqzzjy.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrdnRyZHh6aGVtemVnb3F6emp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU5OTE2MDcsImV4cCI6MjA2MTU2NzYwN30.wxziyfjun69Lirx9cRPDGnu73lVC4Aq7jsV0gFqrWRg
+            
+
+page.tsx:
+
+import { createClient } from '@/utils/supabase/server'
+import { cookies } from 'next/headers'
+
+export default async function Page() {
+  const cookieStore = await cookies()
+  const supabase = createClient(cookieStore)
+
+  const { data: todos } = await supabase.from('todos').select()
+
+  return (
+    <ul>
+      {todos?.map((todo) => (
+        <li>{todo}</li>
+      ))}
+    </ul>
+  )
+}
+
+
+
+***********************
+Full list of varriable installed Vercel on
+Supabase:
+POSTGRES_URL
+POSTGRES_PRISMA_URL
+POSTGRES_URL_NON_POOLING
+POSTGRES_USER
+POSTGRES_HOST
+POSTGRES_PASSWORD
+POSTGRES_DATABASE
+SUPABASE_SERVICE_ROLE_KEY
+SUPABASE_ANON_KEY
+SUPABASE_URL
+SUPABASE_JWT_SECRET
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+NEXT_PUBLIC_SUPABASE_URL
+
+*********************
+CinetPay:
+SITE_ID : 105887517
+Secret Key : 80235411067a7fb6dd61c93.14259176
