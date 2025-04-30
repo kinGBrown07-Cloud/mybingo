@@ -119,10 +119,25 @@ export function RegistrationForm() {
 
     setIsLoading(true);
     try {
+      // Transformer les données en camelCase pour l'API
+      const apiData = {
+        email: data.email,
+        password: data.password,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        phoneNumber: data.phone_number,
+        birthdate: data.birthdate,
+        country: data.country,
+        region: data.region,
+        currency: data.currency,
+        acceptTerms: data.accept_terms,
+        referralCode: data.referral_code
+      };
+
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(apiData),
       });
 
       const result = await response.json();
