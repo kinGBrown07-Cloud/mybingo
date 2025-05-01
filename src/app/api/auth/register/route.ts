@@ -68,11 +68,27 @@ export async function POST(req: Request) {
       console.log('Connexion à Supabase réussie');
       
       // Tentative d'inscription très simplifiée
+      // Récupérer l'URL du site depuis les variables d'environnement
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mybingo.reussirafrique.com';
+      console.log('URL du site pour la redirection:', siteUrl);
+      
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
-          // Aucune métadonnée pour simplifier
+          // Ajouter les métadonnées utilisateur
+          data: {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            country: data.country,
+            region: data.region,
+            currency: data.currency,
+            phoneNumber: data.phoneNumber || '',
+            birthdate: data.birthdate || '',
+            role: 'USER'
+          },
+          // URL de redirection après vérification d'email
+          emailRedirectTo: `${siteUrl}/auth/callback`
         }
       });
       
