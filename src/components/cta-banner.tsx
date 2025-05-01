@@ -86,7 +86,7 @@ export function CTABanner() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          <Link href="/register">
+          <Link href="/auth/register">
             <Button className="w-full sm:w-auto bg-white hover:bg-yellow-100 text-red-700 font-bold px-8 py-3">
               CRÉER UN COMPTE
             </Button>

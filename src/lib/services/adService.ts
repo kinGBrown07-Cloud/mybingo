@@ -103,7 +103,7 @@ function getTestBanners(): AdBanner[] {
       description: 'Doublez votre premier dépôt jusqu\'à 100€ et recevez 50 points bonus supplémentaires !',
       imageUrl: '/images/promotions/welcome-bonus.jpg',
       ctaText: 'RÉCLAMER MAINTENANT',
-      ctaLink: '/register',
+      ctaLink: '/auth/register',
       backgroundColor: 'bg-gradient-to-r from-green-700 to-green-900',
       textColor: 'text-white',
       position: 'top',

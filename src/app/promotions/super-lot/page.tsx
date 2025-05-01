@@ -61,7 +61,7 @@ export default function SuperLot() {
             </div>
 
             <div className="mt-8">
-              <Link href="/register">
+              <Link href="/auth/register">
                 <Button className="casino-button py-6 px-8 w-full sm:w-auto">
                   PARTICIPER MAINTENANT
                 </Button>

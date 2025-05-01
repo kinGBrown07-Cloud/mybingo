@@ -13,6 +13,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase-client";
 import { User } from "@supabase/supabase-js";
+import { Menu, X } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export function Navbar() {
   const router = useRouter();
@@ -117,9 +123,12 @@ export function Navbar() {
           </span>
         </Link>
 
-        <MainNav className="mx-6" />
+        {/* Navigation pour écrans moyens et grands */}
+        <div className="hidden md:block">
+          <MainNav className="mx-6" />
+        </div>
 
-        <div className="ml-auto flex items-center space-x-6">
+        <div className="ml-auto flex items-center space-x-4">
           {user ? (
             <UserNav 
               profile={{
@@ -133,31 +142,80 @@ export function Navbar() {
               onLogout={handleLogout} 
             />
           ) : (
-            <div className="flex items-center space-x-6">
-              <Link href="/auth/login">
-                <Button 
-                  variant="ghost" 
-                  size="lg"
-                  className="text-base text-white hover:text-purple-400 hover:bg-zinc-800"
-                >
-                  Connexion
-                </Button>
-              </Link>
-              <Dialog>
-                <DialogTrigger asChild>
+            <>
+              {/* Boutons pour écrans moyens et grands */}
+              <div className="hidden md:flex items-center space-x-4">
+                <Link href="/auth/login">
                   <Button 
-                    variant="default" 
+                    variant="ghost" 
                     size="lg"
-                    className="text-base bg-purple-600 hover:bg-purple-700 text-white"
+                    className="text-base text-white hover:text-purple-400 hover:bg-zinc-800"
                   >
-                    Inscription
+                    Connexion
                   </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <RegistrationForm />
-                </DialogContent>
-              </Dialog>
-            </div>
+                </Link>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button 
+                      variant="default" 
+                      size="lg"
+                      className="text-base bg-purple-600 hover:bg-purple-700 text-white"
+                    >
+                      Inscription
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <RegistrationForm />
+                  </DialogContent>
+                </Dialog>
+              </div>
+              
+              {/* Menu hamburger pour petits écrans */}
+              <Sheet>
+                <SheetTrigger asChild className="md:hidden">
+                  <Button variant="ghost" size="icon" className="h-10 w-10">
+                    <Menu className="h-6 w-6" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-zinc-900 border-zinc-800">
+                  <div className="flex flex-col space-y-6 py-6">
+                    <div className="flex flex-col space-y-3">
+                      <Link href="/games/memory" className="text-lg font-medium hover:text-purple-400 transition-colors">Jeux Memory</Link>
+                      <Link href="/games/blackjack" className="text-lg font-medium hover:text-purple-400 transition-colors">Blackjack</Link>
+                      <Link href="/games/slots" className="text-lg font-medium hover:text-purple-400 transition-colors">Machines à sous</Link>
+                      <Link href="/shop" className="text-lg font-medium hover:text-purple-400 transition-colors">Boutique</Link>
+                      <Link href="/leaderboard" className="text-lg font-medium hover:text-purple-400 transition-colors">Classement</Link>
+                      <Link href="/help" className="text-lg font-medium hover:text-purple-400 transition-colors">Aide</Link>
+                    </div>
+                    <div className="flex flex-col space-y-4 pt-6 border-t border-zinc-800">
+                      <Link href="/auth/login">
+                        <Button 
+                          variant="ghost" 
+                          size="lg"
+                          className="w-full text-base text-white hover:text-purple-400 hover:bg-zinc-800"
+                        >
+                          Connexion
+                        </Button>
+                      </Link>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button 
+                            variant="default" 
+                            size="lg"
+                            className="w-full text-base bg-purple-600 hover:bg-purple-700 text-white"
+                          >
+                            Inscription
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                          <RegistrationForm />
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </>
           )}
         </div>
       </div>

@@ -175,7 +175,7 @@ export default function GamesPage() {
               Nous travaillons activement sur de nouveaux jeux de cartes passionnants. Inscrivez-vous dès maintenant pour découvrir nos lots exceptionnels !
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/register">
+              <Link href="/auth/register">
                 <Button className="casino-button px-8 py-6">
                   S'INSCRIRE MAINTENANT
                 </Button>

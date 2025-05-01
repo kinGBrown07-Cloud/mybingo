@@ -13,27 +13,27 @@ export function Footer() {
     <footer className="bg-zinc-900 border-t border-zinc-800">
       {/* Section CTA */}
       <div className="bg-gradient-to-r from-red-800 to-red-700">
-        <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:py-16 lg:px-8">
-          <div className="px-6 py-6 md:py-12 md:px-12 lg:py-16 lg:px-16 xl:flex xl:items-center">
-            <div className="xl:w-0 xl:flex-1">
-              <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">
+        <div className="max-w-7xl mx-auto px-4 py-8 sm:py-12 sm:px-6 lg:py-16 lg:px-8">
+          <div className="px-4 py-6 sm:px-6 md:py-12 md:px-12 lg:py-16 lg:px-16 xl:flex xl:items-center">
+            <div className="text-center xl:text-left xl:w-0 xl:flex-1">
+              <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl md:text-3xl lg:text-4xl">
                 Prêt à commencer à jouer?
               </h2>
-              <p className="mt-3 max-w-3xl text-lg leading-6 text-white">
+              <p className="mt-2 sm:mt-3 max-w-3xl text-base sm:text-lg leading-6 text-white mx-auto xl:mx-0">
                 Inscrivez-vous dès aujourd'hui et découvrez nos jeux de cartes avec des lots exceptionnels à gagner !
               </p>
             </div>
-            <div className="mt-8 sm:w-full sm:max-w-md xl:mt-0 xl:ml-8">
-              <div className="sm:flex">
-                <div className="mt-3 rounded-md sm:mt-0 sm:ml-3">
-                  <Link href="/register">
-                    <Button className="casino-button w-full text-lg py-6 px-8 uppercase font-bold">
+            <div className="mt-6 sm:mt-8 w-full sm:max-w-md mx-auto xl:mx-0 xl:mt-0 xl:ml-8">
+              <div className="flex justify-center xl:justify-start">
+                <div className="rounded-md w-full sm:w-auto">
+                  <Link href="/auth/register">
+                    <Button className="casino-button w-full sm:w-auto text-base sm:text-lg py-4 sm:py-6 px-4 sm:px-8 uppercase font-bold">
                       Créer un compte
                     </Button>
                   </Link>
                 </div>
               </div>
-              <p className="mt-3 text-sm text-white">
+              <p className="mt-3 text-xs sm:text-sm text-white text-center xl:text-left">
                 Nous prenons la protection de vos données au sérieux. Lisez notre {' '}
                 <a href="#" className="font-medium text-white underline">
                   politique de confidentialité

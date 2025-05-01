@@ -112,7 +112,7 @@ export default function Home() {
                     <span className="text-yellow-500">PROGRAMME D'AFFILIATION EXCLUSIF</span>
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4">
-                    <Link href="/register">
+                    <Link href="/auth/register">
                       <Button className="w-full casino-button text-lg px-8 py-6">
                         INSCRIVEZ-VOUS
                       </Button>
@@ -224,7 +224,7 @@ export default function Home() {
                 </li>
               </ul>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/register">
+                <Link href="/auth/register">
                   <Button className="w-full casino-button">
                     PARTICIPER MAINTENANT
                   </Button>
@@ -236,7 +236,7 @@ export default function Home() {
                 </Link>
               </div>
               <p className="text-white/60 text-sm mt-4">
-                Tirage au sort le 30 de chaque mois. Voir règlement complet dans les conditions du jeu.
+                Gagnez immédiatement en trouvant la carte gagnante dans le mode Jackpot. Le gagnant peut retirer son gain soit en liquide soit en nature. Voir règlement complet dans les conditions du jeu.
               </p>
             </div>
             <div className="relative h-[300px] md:h-[400px]">
@@ -592,7 +592,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="mt-8">
-                <Link href="/register">
+                <Link href="/auth/register">
                   <Button className="casino-button text-lg px-8 py-6">
                     DEVENIR AFFILIÉ
                   </Button>
