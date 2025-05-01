@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback } from 'react';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase-client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -29,9 +29,10 @@ interface DashboardStats {
 }
 
 export default function AdminDashboard() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const { toast } = useToast();
+  const [user, setUser] = useState<{ id: string; email?: string; user_metadata?: Record<string, unknown>; app_metadata?: Record<string, unknown> } | null>(null);
+  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats>({
     totalUsers: 0,
     activeUsers: 0,
@@ -66,13 +67,43 @@ export default function AdminDashboard() {
   }, [toast]);
 
   useEffect(() => {
-    if (session?.user) {
-      fetchStats();
+    async function checkAuth() {
+      try {
+        // Vérifier si l'utilisateur est authentifié
+        const { data: { user: supabaseUser }, error } = await supabase.auth.getUser();
+        
+        if (error || !supabaseUser) {
+          console.log('Utilisateur non authentifié, redirection vers login');
+          router.push('/auth/login');
+          return;
+        }
+        
+        // Vérifier si l'utilisateur est admin
+        const isAdmin = 
+          supabaseUser.user_metadata?.role === 'ADMIN' || 
+          supabaseUser.app_metadata?.role === 'ADMIN';
+        
+        if (!isAdmin) {
+          console.log('Utilisateur non admin, redirection vers dashboard');
+          router.push('/dashboard');
+          return;
+        }
+        
+        setUser(supabaseUser);
+        fetchStats();
+      } catch (error) {
+        console.error('Erreur lors de la vérification de l\'authentification:', error);
+        router.push('/auth/login');
+      } finally {
+        setLoading(false);
+      }
     }
-  }, [session, fetchStats]);
+    
+    checkAuth();
+  }, [fetchStats, router]);
 
-  if (status === "loading") {
-    return <div>Chargement...</div>;
+  if (loading) {
+    return <div className="flex items-center justify-center h-screen">Chargement...</div>;
   }
 
   return (

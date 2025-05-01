@@ -8,14 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   Form,
   FormControl,
   FormDescription,
@@ -32,6 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ALL_COUNTRIES, getRegionByCountry, Region, Currency, REGIONS } from '@/lib/constants/regions';
+import { getPhoneCodeForCountry } from '@/utils/phone-utils';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -148,11 +141,16 @@ export function RegistrationForm() {
 
       toast({
         title: "Inscription réussie !",
-        description: "Votre compte a été créé avec succès.",
+        description: result.message || "Votre compte a été créé avec succès.",
       });
 
-      // Redirection vers la page de connexion
-      router.push('/auth/login');
+      // Redirection vers l'URL fournie par l'API ou vers le tableau de bord par défaut
+      if (result.redirectUrl) {
+        router.push(result.redirectUrl);
+      } else {
+        // Fallback vers le tableau de bord si aucune URL de redirection n'est fournie
+        router.push('/dashboard');
+      }
     } catch (error) {
       toast({
         title: "Erreur",
@@ -172,9 +170,13 @@ export function RegistrationForm() {
           name="first_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Prénom</FormLabel>
+              <FormLabel className="text-white">Prénom</FormLabel>
               <FormControl>
-                <Input placeholder="John" {...field} />
+                <Input 
+                  placeholder="Votre prénom" 
+                  {...field} 
+                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -185,9 +187,13 @@ export function RegistrationForm() {
           name="last_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nom</FormLabel>
+              <FormLabel className="text-white">Nom</FormLabel>
               <FormControl>
-                <Input placeholder="Doe" {...field} />
+                <Input 
+                  placeholder="Votre nom" 
+                  {...field} 
+                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -200,9 +206,14 @@ export function RegistrationForm() {
         name="email"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Email</FormLabel>
+            <FormLabel className="text-white">Email</FormLabel>
             <FormControl>
-              <Input type="email" placeholder="john.doe@example.com" {...field} />
+              <Input 
+                placeholder="votre@email.com" 
+                type="email" 
+                {...field} 
+                className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -215,12 +226,17 @@ export function RegistrationForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mot de passe</FormLabel>
+              <FormLabel className="text-white">Mot de passe</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input 
+                  placeholder="********" 
+                  type="password" 
+                  {...field} 
+                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                />
               </FormControl>
-              <FormDescription>
-                8 caractères min., 1 majuscule, 1 chiffre
+              <FormDescription className="text-white/60 text-xs">
+                Au moins 8 caractères avec une majuscule, une minuscule et un chiffre
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -231,9 +247,14 @@ export function RegistrationForm() {
           name="confirm_password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirmer le mot de passe</FormLabel>
+              <FormLabel className="text-white">Confirmer le mot de passe</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input 
+                  placeholder="********" 
+                  type="password" 
+                  {...field} 
+                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -241,9 +262,9 @@ export function RegistrationForm() {
         />
       </div>
 
-      <Button
+      <Button 
         type="button"
-        className="w-full"
+        className="w-full bg-purple-600 hover:bg-purple-700 text-white"
         onClick={() => {
           const { email, password, confirm_password, first_name, last_name } = form.getValues();
           if (!email || !password || !confirm_password || !first_name || !last_name) {
@@ -257,7 +278,7 @@ export function RegistrationForm() {
           setStep(2);
         }}
       >
-        Suivant
+        Continuer
       </Button>
     </>
   );
@@ -267,50 +288,33 @@ export function RegistrationForm() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
           control={form.control}
-          name="phone_number"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Téléphone (optionnel)</FormLabel>
-              <FormControl>
-                <Input type="tel" placeholder="+1234567890" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="birthdate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Date de naissance (optionnel)</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={form.control}
           name="country"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Pays</FormLabel>
+              <FormLabel className="text-white">Pays</FormLabel>
               <Select onValueChange={(value) => {
                 field.onChange(value);
+                
+                // Mettre à jour la région et la devise en fonction du pays
                 const region = getRegionByCountry(value);
                 if (region) {
                   form.setValue("region", region);
                   const config = REGIONS[region];
                   form.setValue("currency", config.currency as Currency);
                 }
+                
+                // Ajouter l'indicatif téléphonique au champ téléphone
+                const phoneCode = getPhoneCodeForCountry(value);
+                const currentPhone = form.getValues("phone_number") || "";
+                
+                // Ne pas modifier si le champ est déjà rempli avec un indicatif
+                if (!currentPhone.startsWith('+')) {
+                  // Si le champ est vide ou ne commence pas par +, ajouter l'indicatif
+                  form.setValue("phone_number", phoneCode + " ");
+                }
               }} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white/10 border-white/20 text-white">
                     <SelectValue placeholder="Sélectionnez votre pays" />
                   </SelectTrigger>
                 </FormControl>
@@ -328,13 +332,35 @@ export function RegistrationForm() {
         />
         <FormField
           control={form.control}
+          name="phone_number"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-white">Téléphone (optionnel)</FormLabel>
+              <FormControl>
+                <Input 
+                  placeholder="+33 6 12 34 56 78" 
+                  {...field} 
+                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+      
+      {/* Le champ de date de naissance a été temporairement retiré */}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormField
+          control={form.control}
           name="region"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Région</FormLabel>
+              <FormLabel className="text-white">Région</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white/10 border-white/20 text-white">
                     <SelectValue placeholder="Sélectionnez votre région" />
                   </SelectTrigger>
                 </FormControl>
@@ -350,18 +376,15 @@ export function RegistrationForm() {
             </FormItem>
           )}
         />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
           control={form.control}
           name="currency"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Devise</FormLabel>
+              <FormLabel className="text-white">Devise</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white/10 border-white/20 text-white">
                     <SelectValue placeholder="Sélectionnez votre devise" />
                   </SelectTrigger>
                 </FormControl>
@@ -377,20 +400,25 @@ export function RegistrationForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="referral_code"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Code de parrainage (optionnel)</FormLabel>
-              <FormControl>
-                <Input placeholder="Code de parrainage" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
       </div>
+
+      <FormField
+        control={form.control}
+        name="referral_code"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="text-white">Code de parrainage (optionnel)</FormLabel>
+            <FormControl>
+              <Input 
+                placeholder="Code de parrainage" 
+                {...field} 
+                className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       <FormField
         control={form.control}
@@ -401,12 +429,13 @@ export function RegistrationForm() {
               <Checkbox
                 checked={field.value}
                 onCheckedChange={field.onChange}
+                className="border-white/50 data-[state=checked]:bg-purple-600"
               />
             </FormControl>
             <div className="space-y-1 leading-none">
-              <FormLabel>
+              <FormLabel className="text-white">
                 J'accepte les{' '}
-                <Link href="/terms" className="text-primary hover:underline">
+                <Link href="/terms" className="text-purple-400 hover:text-purple-300 hover:underline">
                   conditions d'utilisation
                 </Link>
               </FormLabel>
@@ -420,19 +449,19 @@ export function RegistrationForm() {
         <Button
           type="button"
           variant="outline"
-          className="w-full"
+          className="w-full border-white/20 text-white hover:bg-white/10"
           onClick={() => setStep(1)}
         >
           Retour
         </Button>
         <Button
           type="submit"
-          className="w-full"
+          className="w-full bg-purple-600 hover:bg-purple-700 text-white"
           disabled={isLoading}
         >
           {isLoading ? (
             <div className="flex items-center gap-2">
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
               Création du compte...
             </div>
           ) : (
@@ -444,33 +473,33 @@ export function RegistrationForm() {
   );
 
   return (
-    <Card className="w-full max-w-lg mx-auto">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center">
+    <div className="w-full">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-white text-center">
           {step === 1 ? "Créer un compte" : "Informations complémentaires"}
-        </CardTitle>
-        <CardDescription className="text-center">
+        </h2>
+        <p className="text-white/80 text-center mt-2">
           {step === 1 
             ? "Rejoignez Bingoo et commencez à jouer dès aujourd'hui !"
             : "Quelques informations supplémentaires pour personnaliser votre expérience"
           }
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {step === 1 ? renderStep1() : renderStep2()}
-          </form>
-        </Form>
-      </CardContent>
-      <CardFooter className="flex justify-center">
-        <p className="text-sm text-muted-foreground">
+        </p>
+      </div>
+      
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {step === 1 ? renderStep1() : renderStep2()}
+        </form>
+      </Form>
+      
+      <div className="mt-6 text-center">
+        <p className="text-sm text-white/70">
           Déjà inscrit ?{' '}
-          <Link href="/auth/login" className="text-primary hover:underline">
+          <Link href="/auth/login" className="text-purple-400 hover:text-purple-300 hover:underline">
             Connectez-vous
           </Link>
         </p>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 }

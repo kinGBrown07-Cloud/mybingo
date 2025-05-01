@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { signIn } from 'next-auth/react';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { supabase } from '@/lib/supabase-client';
 
 interface LoginFormData {
   email: string;
@@ -38,18 +38,29 @@ export function LoginForm() {
     try {
       setIsLoading(true);
 
-      const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
-      const result = await signIn('credentials', {
+      const callbackUrl = searchParams?.get('callbackUrl') || '/dashboard';
+      
+      // Utiliser Supabase pour la connexion
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
-        redirect: false,
       });
 
-      if (result?.error) {
+      if (error) {
+        console.error("Erreur de connexion:", error);
         toast({
           variant: "destructive",
           title: "Erreur",
-          description: result.error || "Une erreur est survenue lors de la connexion",
+          description: error.message || "Une erreur est survenue lors de la connexion",
+        });
+        return;
+      }
+
+      if (!data.user) {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Utilisateur non trouvé",
         });
         return;
       }
@@ -59,9 +70,13 @@ export function LoginForm() {
         description: "Vous êtes maintenant connecté.",
       });
 
-      router.push(callbackUrl);
-      router.refresh();
+      // Ajouter un petit délai pour s'assurer que la session est bien établie
+      setTimeout(() => {
+        // Forcer la navigation vers la page de destination
+        window.location.href = callbackUrl;
+      }, 500);
     } catch (error) {
+      console.error("Erreur inattendue:", error);
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -80,51 +95,71 @@ export function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            required
-            disabled={isLoading}
-            value={formData.email}
-            onChange={(e) => handleChange('email', e.target.value)}
-          />
+    <div className="w-full">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-white text-center">Connexion</h2>
+        <p className="text-white/80 text-center mt-2">
+          Accédez à votre compte Bingoo
+        </p>
+      </div>
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-white">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              required
+              disabled={isLoading}
+              value={formData.email}
+              onChange={(e) => handleChange('email', e.target.value)}
+              className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password" className="text-white">Mot de passe</Label>
+            <Input
+              id="password"
+              type="password"
+              required
+              disabled={isLoading}
+              value={formData.password}
+              onChange={(e) => handleChange('password', e.target.value)}
+              className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+            />
+          </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="password">Mot de passe</Label>
-          <Input
-            id="password"
-            type="password"
-            required
-            disabled={isLoading}
-            value={formData.password}
-            onChange={(e) => handleChange('password', e.target.value)}
-          />
+        <Button 
+          type="submit" 
+          className="w-full bg-purple-600 hover:bg-purple-700 text-white" 
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <div className="flex items-center gap-2">
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              Connexion en cours...
+            </div>
+          ) : "Se connecter"}
+        </Button>
+
+        <div className="flex justify-between text-sm">
+          <a
+            href="/auth/register"
+            className="text-purple-400 hover:text-purple-300 hover:underline"
+          >
+            Créer un compte
+          </a>
+          <a
+            href="/auth/forgot-password"
+            className="text-purple-400 hover:text-purple-300 hover:underline"
+          >
+            Mot de passe oublié ?
+          </a>
         </div>
-      </div>
-
-      <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? "Connexion en cours..." : "Se connecter"}
-      </Button>
-
-      <div className="flex justify-between text-sm">
-        <a
-          href="/auth/register"
-          className="text-primary hover:underline"
-        >
-          Créer un compte
-        </a>
-        <a
-          href="/auth/forgot-password"
-          className="text-primary hover:underline"
-        >
-          Mot de passe oublié ?
-        </a>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }

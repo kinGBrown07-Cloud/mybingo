@@ -1,12 +1,14 @@
-import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "@/components/layouts/client-layout";
-import RootWrapper from "@/components/layouts/root-wrapper";
 import { Navbar } from "@/components/navigation/navbar";
+import { AuthProviderWrapper } from '@/components/providers/auth-provider-wrapper';
 
-export const metadata: Metadata = {
-  title: "Bingoo - Jeux de cartes en ligne",
-  description: "Jouez à des jeux de cartes passionnants et gagnez des lots exceptionnels",
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata = {
+  title: 'Bingoo - Jeux en ligne',
+  description: 'Plateforme de jeux en ligne Bingoo',
 };
 
 export default function RootLayout({
@@ -15,15 +17,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <RootWrapper>
-      <ClientLayout>
-        <div className="relative flex min-h-screen flex-col">
-          <Navbar />
-          <main className="flex-1">
-            {children}
-          </main>
-        </div>
-      </ClientLayout>
-    </RootWrapper>
+    <html lang="fr" className={inter.className} suppressHydrationWarning>
+      <body className="min-h-screen bg-background font-sans antialiased">
+        <AuthProviderWrapper>
+          <ClientLayout>
+            <div className="relative flex min-h-screen flex-col">
+              <Navbar />
+              <main className="flex-1">
+                {children}
+              </main>
+            </div>
+          </ClientLayout>
+        </AuthProviderWrapper>
+      </body>
+    </html>
   );
 }

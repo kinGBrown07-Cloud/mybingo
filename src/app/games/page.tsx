@@ -30,9 +30,9 @@ export default function GamesPage() {
       description: 'Gagnez des kits alimentaires de qualité ou leur équivalent en argent. Trouvez deux images identiques parmi les cartes.',
       image: '/images/games/cards/classic-cards.png',
       status: 'popular',
-      minBet: '5€',
-      maxWin: '500€',
-      coinBet: '500 Coins',
+      minBet: '150 XOF',
+      maxWin: '65 000 XOF',
+      coinBet: '1 point',
       path: '/games/foods',
       themeColor: 'red',
       badgeText: 'POPULAIRE',
@@ -44,9 +44,9 @@ export default function GamesPage() {
       description: 'Remportez des vêtements tendance et accessoires de marque, ou optez pour leur valeur en argent.',
       image: '/images/games/cards/magic-fortune.png',
       status: 'available',
-      minBet: '10€',
-      maxWin: '1000€',
-      coinBet: '1000 Coins',
+      minBet: '300 XOF',
+      maxWin: '130 000 XOF',
+      coinBet: '2 points',
       path: '/games/mode',
       themeColor: 'purple',
       badgeText: 'MODE',
@@ -58,9 +58,9 @@ export default function GamesPage() {
       description: 'Tentez votre chance pour gagner des lots exceptionnels : voitures, voyages, électronique haut de gamme !',
       image: '/images/games/cards/gold-digger.png',
       status: 'available',
-      minBet: '20€',
-      maxWin: '5000€',
-      coinBet: '2000 Coins',
+      minBet: '600 XOF',
+      maxWin: '2 500 000 XOF',
+      coinBet: '4 points',
       path: '/games/jackpot',
       themeColor: 'amber',
       badgeText: 'LOTS EXCEPTIONNELS',
@@ -87,7 +87,7 @@ export default function GamesPage() {
         <div className="flex flex-col md:flex-row items-center justify-between mb-12 bg-zinc-800/50 p-6 rounded-lg">
           <div>
             <h2 className="text-xl font-bold text-white">Jeux à retourner</h2>
-            <p className="text-gray-300 mt-1">
+            <p className="text-gray-400 mt-1">
               Trouvez les cartes gagnantes pour des gains instantanés!
             </p>
           </div>

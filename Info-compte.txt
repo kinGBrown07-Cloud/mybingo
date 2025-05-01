@@ -17,6 +17,7 @@ JWT Secret: MyJWAlqt2zUIgX31Uv4KlSMrOlHffe2V6mt4lSsg8XS+QHHtIsIg01A47CGZo6hXJHDW
 shared pooler: 
 postgresql://postgres.ykvtrdxzhemzegoqzzjy:[BX0BjDepI9F90Eg8]@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
 
+postgres://postgres:[YOUR-PASSWORD]@db.ykvtrdxzhemzegoqzzjy.supabase.co:6543/postgres
 
 .env.local:
 
@@ -46,6 +47,18 @@ export default async function Page() {
 
 
 brownLemessi13@
+
+Admin:
+
+Administrateur créé avec succès:
+Email: admin@bingoo.com
+Nom d'utilisateur: admin
+Mot de passe: Admin123!
+Points initiaux: 1000000 points
+
+Ne partagez pas ces informations et changez le mot de passe en production!
+PS C:\wamp64\www\bingoo>
+
 ***********************
 Full list of varriable installed Vercel on
 Supabase:

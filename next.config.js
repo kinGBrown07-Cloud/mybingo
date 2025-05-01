@@ -11,10 +11,10 @@ const nextConfig = {
     unoptimized: true,
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true, // Ignorer les erreurs TypeScript pendant le build
   },
   webpack: (config, { isServer }) => {
     // Ajouter le support des fichiers audio
@@ -66,10 +66,20 @@ const nextConfig = {
 
     return config;
   },
-  // Ajouter la configuration pour l'environnement de production
+  // Configuration pour l'environnement de production
   env: {
     DATABASE_URL: process.env.DATABASE_URL,
     JWT_SECRET: process.env.JWT_SECRET
+  },
+  // Configuration expérimentale
+  experimental: {
+    serverActions: {
+      allowedOrigins: ['localhost:3000'],
+    },
+  },
+  // Configuration du compilateur
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
   }
 };
 

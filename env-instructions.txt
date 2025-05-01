@@ -1,0 +1,21 @@
+# Instructions pour configurer les variables d'environnement PayPal
+
+Pour que le paiement PayPal fonctionne correctement, vous devez créer un fichier `.env.local` à la racine de votre projet avec les variables suivantes :
+
+```
+# Configuration PayPal
+NEXT_PUBLIC_PAYPAL_CLIENT_ID=votre_client_id_paypal
+PAYPAL_SECRET=votre_secret_paypal
+
+# Pour les tests en mode sandbox, utilisez vos identifiants de développeur PayPal
+# Pour la production, utilisez vos identifiants de production PayPal
+
+# Exemple pour le mode sandbox (test) :
+# NEXT_PUBLIC_PAYPAL_CLIENT_ID=AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R
+```
+
+Suivez ces étapes :
+1. Créez un fichier `.env.local` à la racine du projet
+2. Copiez le contenu ci-dessus dans ce fichier
+3. Remplacez `votre_client_id_paypal` par votre véritable Client ID PayPal
+4. Redémarrez votre serveur de développement avec `npm run dev`

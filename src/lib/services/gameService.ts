@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { GameType } from '@prisma/client';
+import { GameType, Prisma } from '@prisma/client';
 
 export const gameService = {
   async getGameById(gameId: string) {
@@ -15,35 +15,35 @@ export const gameService = {
     });
   },
 
-  async createGameSession(userId: string, gameId: string, pointsWagered: number) {
+  async createGameSession(profileId: string, gameId: string, points: number) {
     return prisma.gameSession.create({
       data: {
-        userId,
+        profileId,
         gameId,
-        pointsWagered
+        type: GameType.FOODS, // Valeur par défaut ou à déterminer selon la logique
+        points
       }
     });
   },
 
-  async endGameSession(sessionId: string, pointsWon: number, result: any) {
+  async endGameSession(sessionId: string, hasWon: boolean, result: Record<string, unknown>) {
     return prisma.gameSession.update({
       where: { id: sessionId },
       data: {
-        pointsWon,
-        result,
+        hasWon,
+        result: result as Prisma.InputJsonValue,
         endedAt: new Date()
       }
     });
   },
 
-  async getUserGameHistory(userId: string) {
+  async getUserGameHistory(profileId: string) {
     return prisma.gameSession.findMany({
-      where: { userId },
+      where: { profileId },
       include: {
-        game: true,
-        prize: true
+        game: true
       },
-      orderBy: { startedAt: 'desc' }
+      orderBy: { createdAt: 'desc' }
     });
   },
 

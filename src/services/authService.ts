@@ -90,11 +90,34 @@ async function isEmailInUse(email: string): Promise<boolean> {
   }
 }
 
+// Fonction de validation du mot de passe
+function validatePassword(password: string): { valid: boolean; message?: string } {
+  if (password.length < 8) {
+    return { valid: false, message: 'Le mot de passe doit contenir au moins 8 caractères' };
+  }
+  if (!/[A-Z]/.test(password)) {
+    return { valid: false, message: 'Le mot de passe doit contenir au moins une majuscule' };
+  }
+  if (!/[0-9]/.test(password)) {
+    return { valid: false, message: 'Le mot de passe doit contenir au moins un chiffre' };
+  }
+  return { valid: true };
+}
+
 /**
  * Crée un compte utilisateur
  */
 export async function registerUser(data: RegistrationData): Promise<AuthResult> {
   try {
+    // Validation du mot de passe
+    const passwordValidation = validatePassword(data.password);
+    if (!passwordValidation.valid) {
+      return {
+        success: false,
+        message: passwordValidation.message || 'Mot de passe invalide'
+      };
+    }
+
     // Vérifier si l'email est déjà utilisé
     if (await isEmailInUse(data.email)) {
       return {
@@ -160,7 +183,7 @@ export async function registerUser(data: RegistrationData): Promise<AuthResult> 
     console.error('Register error:', error);
     return {
       success: false,
-      message: 'Une erreur est survenue lors de l\'inscription',
+      message: error instanceof Error ? error.message : 'Une erreur est survenue lors de l\'inscription'
     };
   }
 }
@@ -170,6 +193,13 @@ export async function registerUser(data: RegistrationData): Promise<AuthResult> 
  */
 export async function loginUser(email: string, password: string): Promise<AuthResult> {
   try {
+    if (!email || !password) {
+      return {
+        success: false,
+        message: 'Email et mot de passe requis'
+      };
+    }
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
@@ -197,7 +227,7 @@ export async function loginUser(email: string, password: string): Promise<AuthRe
     console.error('Login error:', error);
     return {
       success: false,
-      message: 'Email ou mot de passe incorrect',
+      message: error instanceof Error ? error.message : 'Email ou mot de passe incorrect'
     };
   }
 }

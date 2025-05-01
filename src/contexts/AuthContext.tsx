@@ -1,33 +1,27 @@
 "use client";
 
 import { createContext, useContext, ReactNode } from 'react';
-import { Profile } from '@prisma/client';
 import { useAuth } from '@/hooks/useAuth';
+import { RegistrationData } from '@/services/authService';
+import { UserProfile } from '@/services/authService';
 
-interface AuthResponse {
-  profile: Profile | null;
-  error: string | null;
-}
-
-interface SignUpData {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber?: string;
-  country: string;
-  region: 'BLACK_AFRICA' | 'NORTH_AFRICA' | 'EUROPE' | 'AMERICAS' | 'ASIA';
-  currency?: 'XOF' | 'MAD' | 'EUR' | 'USD';
-  referralCode?: string;
-  acceptTerms: boolean;
+interface AuthResult {
+  success: boolean;
+  message?: string;
+  user?: UserProfile;
+  profile?: UserProfile;
 }
 
 interface AuthContextType {
-  profile: Profile | null;
+  user: UserProfile | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<AuthResponse>;
-  signUp: (data: SignUpData) => Promise<AuthResponse>;
+  error: string | null;
+  success: string | null;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (data: RegistrationData) => Promise<void>;
   signOut: () => Promise<void>;
+  checkAuth: () => Promise<AuthResult | { success: boolean; profile: null }>;
+  clearMessages: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);

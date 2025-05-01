@@ -5,8 +5,8 @@ export async function GET() {
   try {
     // Récupérer les statistiques des utilisateurs
     const [totalUsers, activeUsers] = await Promise.all([
-      prisma.profile.count(),
-      prisma.profile.count({
+      prisma.user.count(),
+      prisma.user.count({
         where: { isActive: true }
       })
     ]);
@@ -17,12 +17,12 @@ export async function GET() {
         status: 'COMPLETED'
       },
       select: {
-        amount: true
+        pointsAmount: true
       }
     });
 
     const totalTransactions = transactions.length;
-    const totalRevenue = transactions.reduce((sum, tx) => sum + Number(tx.amount), 0);
+    const totalRevenue = transactions.reduce((sum, tx) => sum + tx.pointsAmount, 0);
 
     // Récupérer les statistiques des jeux
     const games = await prisma.gameSession.findMany({

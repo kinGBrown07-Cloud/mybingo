@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 
-export default function ResetPasswordConfirmPage() {
+// Composant qui utilise useSearchParams
+function ResetPasswordConfirmContent() {
   const searchParams = useSearchParams();
   const token = searchParams?.get('token') || '';
   const { confirmResetPassword, isLoading, error } = useAuth();
@@ -109,5 +110,25 @@ export default function ResetPasswordConfirmPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+// Page principale avec Suspense
+export default function ResetPasswordConfirmPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen flex-col items-center justify-center bg-gray-900 py-12 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center">
+            <h2 className="mt-6 text-3xl font-extrabold text-white">Chargement...</h2>
+            <div className="mt-4 flex justify-center">
+              <div className="h-8 w-8 animate-spin border-4 border-primary border-t-transparent rounded-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+    }>
+      <ResetPasswordConfirmContent />
+    </Suspense>
   );
 }

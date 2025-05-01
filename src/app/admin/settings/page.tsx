@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase-client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,9 +12,44 @@ import { useToast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function SettingsPage() {
-  const { data: session } = useSession();
+  const router = useRouter();
+  const [user, setUser] = useState<{ id: string; email?: string; user_metadata?: Record<string, unknown>; app_metadata?: Record<string, unknown> } | null>(null);
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        // Vérifier si l'utilisateur est authentifié
+        const { data: { user: supabaseUser }, error } = await supabase.auth.getUser();
+        
+        if (error || !supabaseUser) {
+          console.log('Utilisateur non authentifié, redirection vers login');
+          router.push('/auth/login');
+          return;
+        }
+        
+        // Vérifier si l'utilisateur est admin
+        const isAdmin = 
+          supabaseUser.user_metadata?.role === 'ADMIN' || 
+          supabaseUser.app_metadata?.role === 'ADMIN';
+        
+        if (!isAdmin) {
+          console.log('Utilisateur non admin, redirection vers dashboard');
+          router.push('/dashboard');
+          return;
+        }
+        
+        setUser(supabaseUser);
+        // No data fetching needed for settings page
+      } catch (error) {
+        console.error('Erreur lors de la vérification de l\'authentification:', error);
+        router.push('/auth/login');
+      }
+    }
+    
+    checkAuth();
+  }, [router]);
 
   const [settings, setSettings] = useState({
     minDeposit: 100,

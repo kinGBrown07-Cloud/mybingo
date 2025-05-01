@@ -55,11 +55,11 @@ export function getCurrencySymbol(currencyCode: string): string {
 // Convertir des points en valeur selon la région
 export function calculatePointsValue(points: number, region: string): { value: number, currency: string } {
   const conversionRates = {
-    'africa_sub': { points: 3, value: 300, currency: 'XOF' },
-    'africa_north': { points: 3, value: 500, currency: 'XOF' },
-    'europe': { points: 3, value: 2, currency: '€' },
-    'asia': { points: 3, value: 2, currency: '$' },
-    'america': { points: 3, value: 2, currency: '$' },
+    'africa_sub': { points: 2, value: 300, currency: 'XOF' },
+    'africa_north': { points: 2, value: 500, currency: 'XOF' },
+    'europe': { points: 2, value: 2, currency: '€' },
+    'asia': { points: 2, value: 2, currency: '$' },
+    'america': { points: 2, value: 2, currency: '$' },
   };
 
   const rate = conversionRates[region as keyof typeof conversionRates] || conversionRates.europe;

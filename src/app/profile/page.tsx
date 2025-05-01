@@ -11,14 +11,19 @@ import { useBalance } from '@/hooks/use-balance';
 import { Coins, Edit2, Save, Camera, Loader2 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { PromoteButton } from '@/components/admin/promote-button';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
   const { toast } = useToast();
   const { coins } = useBalance();
+  const router = useRouter();
+  const supabase = createClientComponentClient();
   const [isEditing, setIsEditing] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -28,31 +33,106 @@ export default function ProfilePage() {
 
   // Charger les données initiales une seule fois
   useEffect(() => {
-    const fetchUser = async () => {
+    async function checkAuth() {
+      setLoading(true);
       try {
-        const response = await fetch('/api/profile');
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
-          setFormData({
-            username: userData.profile?.username || '',
-            email: userData.email || '',
-            phoneNumber: userData.profile?.phoneNumber || '',
-            country: userData.profile?.country || ''
+        // Vérifier si l'utilisateur est authentifié avec Supabase
+        const { data: { user: supabaseUser } } = await supabase.auth.getUser();
+        
+        if (!supabaseUser) {
+          console.log('Utilisateur non authentifié, redirection vers login');
+          router.push('/auth/login');
+          return;
+        }
+        
+        console.log('Utilisateur authentifié:', supabaseUser.id);
+        
+        try {
+          // Récupérer le profil utilisateur via notre API
+          const response = await fetch(`/api/profile?userId=${supabaseUser.id}`);
+          
+          if (response.ok) {
+            const profileData = await response.json();
+            console.log('Profil récupéré avec succès:', profileData);
+            setUser(profileData);
+            
+            // Mettre à jour le formulaire avec les données reçues
+            setFormData({
+              username: profileData?.username || '',
+              email: profileData?.email || '',
+              phoneNumber: profileData?.profile?.phoneNumber || '',
+              country: profileData?.profile?.country || ''
+            });
+          } else {
+            // En cas d'erreur, créer un profil temporaire à partir des données utilisateur
+            console.warn('Impossible de récupérer le profil, utilisation des données utilisateur de base');
+            const userEmail = supabaseUser.email || '';
+            const username = userEmail.split('@')[0] || 'Utilisateur';
+            
+            // Utiliser les données de base de l'utilisateur avec toutes les propriétés requises
+            setUser({
+              id: supabaseUser.id,
+              email: supabaseUser.email || '',
+              emailVerified: null,
+              authProvider: 'EMAIL',
+              role: supabaseUser.user_metadata?.role || 'USER',
+              isActive: true,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              profile: {
+                id: supabaseUser.id,
+                userId: supabaseUser.id,
+                username: username,
+                firstName: '',
+                lastName: '',
+                phoneNumber: null,
+                country: '',
+                region: '',
+                currency: 'XOF',
+                coins: 0,
+                points: 0,
+                pointsRate: 1,
+                vipLevelId: null,
+                referrerId: null,
+                termsAccepted: true,
+                termsAcceptedAt: null,
+                referralCode: null,
+                image_url: null,
+                createdAt: new Date(),
+                updatedAt: new Date()
+              }
+            });
+            
+            setFormData({
+              username: username,
+              email: supabaseUser.email || '',
+              phoneNumber: '',
+              country: ''
+            });
+          }
+        } catch (error) {
+          console.error('Erreur lors de la récupération du profil:', error);
+          toast({
+            variant: "destructive",
+            title: "Erreur",
+            description: "Impossible de charger les données du profil.",
           });
         }
       } catch (error) {
-        console.error('Error fetching user:', error);
+        console.error('Erreur d\'authentification:', error);
         toast({
           variant: "destructive",
-          title: "Erreur",
-          description: "Impossible de charger les données du profil.",
+          title: "Erreur d'authentification",
+          description: "Veuillez vous reconnecter.",
         });
+        router.push('/auth/login');
+      } finally {
+        setLoading(false);
       }
-    };
+    }
 
-    fetchUser();
-  }, [toast]); // Ajout de toast comme dépendance
+    checkAuth();
+  }, [toast, router, supabase.auth]); // Ajout de toast comme dépendance
 
   const handleImageUpload = async (file: File) => {
     try {
@@ -161,6 +241,17 @@ export default function ProfilePage() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="container mx-auto py-10">
+        <div className="flex flex-col items-center justify-center h-[60vh]">
+          <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+          <h3 className="text-xl font-medium">Chargement de votre profil...</h3>
+        </div>
+      </div>
+    );
+  }
+  
   if (!user) {
     return (
       <div className="container mx-auto py-10">
@@ -274,9 +365,12 @@ export default function ProfilePage() {
                     disabled={!isEditing}
                   />
                 </div>
-                {user?.role !== 'ADMIN' && (
+                {user?.role === 'USER' && (
                   <div className="mt-4">
-                    <PromoteButton />
+                    <PromoteButton 
+                      userId={user?.id || ''} 
+                      currentRole={user?.role || 'USER'} 
+                    />
                   </div>
                 )}
               </div>

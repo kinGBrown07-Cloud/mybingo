@@ -9,6 +9,8 @@ import { CTABanner } from '@/components/cta-banner';
 import { PromotionSection } from '@/components/promotion-section';
 import { CardGamesSection } from '@/components/card-games-section';
 import { VideoSection } from '@/components/video-section';
+import { AdBanner } from '@/components/ad-banner';
+import type { AdBanner as AdBannerType } from '@/lib/services/adService';
 
 const mainVideo = {
   id: "main",
@@ -32,6 +34,9 @@ const testimonials = [
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [topBanners, setTopBanners] = useState<AdBannerType[]>([]);
+  const [middleBanners, setMiddleBanners] = useState<AdBannerType[]>([]);
+  const [bottomBanners, setBottomBanners] = useState<AdBannerType[]>([]);
   const slides = [
     {
       image: "/images/banners/hero-banner.png",
@@ -54,6 +59,23 @@ export default function Home() {
     const timer = setInterval(() => {
       setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
     }, 5000);
+
+    // Charger les bannières publicitaires
+    const fetchAdBanners = async () => {
+      try {
+        const response = await fetch('/api/ads/banners');
+        if (response.ok) {
+          const data = await response.json();
+          setTopBanners(data.filter((ad: AdBannerType) => ad.position === 'top'));
+          setMiddleBanners(data.filter((ad: AdBannerType) => ad.position === 'middle'));
+          setBottomBanners(data.filter((ad: AdBannerType) => ad.position === 'bottom'));
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des bannières:', error);
+      }
+    };
+
+    fetchAdBanners();
 
     return () => clearInterval(timer);
   }, [slides.length]);
@@ -149,6 +171,23 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Bannière publicitaire TOP */}
+      {topBanners.length > 0 && (
+        <section className="py-4">
+          <AdBanner
+            id={topBanners[0].id}
+            title={topBanners[0].title}
+            description={topBanners[0].description}
+            imageUrl={topBanners[0].imageUrl}
+            ctaText={topBanners[0].ctaText}
+            ctaLink={topBanners[0].ctaLink}
+            backgroundColor={topBanners[0].backgroundColor}
+            textColor={topBanners[0].textColor}
+            position="top"
+          />
+        </section>
+      )}
+
       {/* Section Super-Lot du moment */}
       <section className="py-12 bg-gradient-to-r from-indigo-900 to-purple-900 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
@@ -170,18 +209,18 @@ export default function Home() {
                 Gagnez un Scooter <span className="text-yellow-400">Électrique</span>
               </h2>
               <p className="text-white/80 mb-6">
-                Pour chaque mise de 20€ ou plus dans nos jeux, obtenez un ticket pour notre tirage au sort mensuel.
-                Ce mois-ci, remportez ce superbe scooter électrique d'une valeur de 3800€ !
+                Jouez au mode Jackpot Cards et tentez de gagner ce superbe scooter électrique d'une valeur de 3800€ !
+                Le Jackpot Cards est notre jeu premium qui vous permet de remporter les lots les plus exceptionnels.
               </p>
               <ul className="space-y-2 mb-6">
                 <li className="flex items-center text-white">
-                  <span className="text-yellow-400 mr-2">✓</span> Autonomie jusqu'à 100 km
+                  <span className="text-yellow-400 mr-2">✓</span> Mise minimum de 20 points
                 </li>
                 <li className="flex items-center text-white">
-                  <span className="text-yellow-400 mr-2">✓</span> 0 émission & écologique
+                  <span className="text-yellow-400 mr-2">✓</span> Gain maximum de 3800€ (2 500 000 XOF)
                 </li>
                 <li className="flex items-center text-white">
-                  <span className="text-yellow-400 mr-2">✓</span> Livraison incluse dans toute l'Europe
+                  <span className="text-yellow-400 mr-2">✓</span> Livraison incluse dans toute l'Afrique et l'Europe
                 </li>
               </ul>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -219,11 +258,45 @@ export default function Home() {
       {/* Section des promotions */}
       <PromotionSection />
 
+      {/* Bannière publicitaire MIDDLE */}
+      {middleBanners.length > 0 && (
+        <section className="py-4">
+          <AdBanner
+            id={middleBanners[0].id}
+            title={middleBanners[0].title}
+            description={middleBanners[0].description}
+            imageUrl={middleBanners[0].imageUrl}
+            ctaText={middleBanners[0].ctaText}
+            ctaLink={middleBanners[0].ctaLink}
+            backgroundColor={middleBanners[0].backgroundColor}
+            textColor={middleBanners[0].textColor}
+            position="middle"
+          />
+        </section>
+      )}
+
       {/* Section CardGames */}
       <CardGamesSection />
 
       {/* Section Vidéo */}
       <VideoSection mainVideo={mainVideo} testimonials={testimonials} />
+
+      {/* Bannière publicitaire BOTTOM */}
+      {bottomBanners.length > 0 && (
+        <section className="py-4">
+          <AdBanner
+            id={bottomBanners[0].id}
+            title={bottomBanners[0].title}
+            description={bottomBanners[0].description}
+            imageUrl={bottomBanners[0].imageUrl}
+            ctaText={bottomBanners[0].ctaText}
+            ctaLink={bottomBanners[0].ctaLink}
+            backgroundColor={bottomBanners[0].backgroundColor}
+            textColor={bottomBanners[0].textColor}
+            position="bottom"
+          />
+        </section>
+      )}
 
       {/* Section témoignages */}
       <section className="py-16 bg-zinc-800">
@@ -479,8 +552,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-
 
       {/* Section CTA avec gagnant de loterie */}
       <section className="py-16 bg-gradient-to-r from-zinc-900 to-black">

@@ -21,6 +21,7 @@ interface UserNavProps {
     email: string;
     image?: string | null;
     photoId?: string | null;
+    role?: string;
   };
   onLogout: () => void;
 }
@@ -53,6 +54,14 @@ export function UserNav({ profile, onLogout }: UserNavProps) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        {profile.role === 'ADMIN' && (
+          <Link href="/admin/dashboard">
+            <DropdownMenuItem>
+              <CreditCard className="mr-2 h-4 w-4" />
+              <span>Tableau de bord Admin</span>
+            </DropdownMenuItem>
+          </Link>
+        )}
         <Link href="/dashboard">
           <DropdownMenuItem>
             <CreditCard className="mr-2 h-4 w-4" />

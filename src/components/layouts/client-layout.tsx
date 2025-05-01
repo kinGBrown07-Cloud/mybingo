@@ -1,22 +1,15 @@
 "use client";
 
-import { AuthProvider } from "@/contexts/AuthContext";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode } from 'react';
 
-export default function ClientLayout({ children }: { children: ReactNode }) {
-  const [isMounted, setIsMounted] = useState(false);
+interface ClientLayoutProps {
+  children: ReactNode;
+}
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
+export default function ClientLayout({ children }: ClientLayoutProps) {
   return (
-    <AuthProvider>
-      {isMounted ? children : (
-        <div className="fixed inset-0 bg-zinc-900 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
-        </div>
-      )}
-    </AuthProvider>
+    <div className="min-h-screen">
+      {children}
+    </div>
   );
 }

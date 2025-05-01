@@ -1,46 +1,60 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { prisma } from '@/lib/prisma';
-import { authOptions } from '@/lib/auth';
+import { prisma } from '@/lib/db';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return new NextResponse('Unauthorized', { status: 401 });
+    // Récupérer l'userId de la requête
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+
+    if (!userId) {
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
     }
 
-    // Récupérer le profil de l'utilisateur depuis la base de données
-    const userWithProfile = await prisma.user.findUnique({
-      where: { id: session.user.id },
+    // Récupérer l'utilisateur et son profil depuis Prisma
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
       include: { profile: true }
     });
 
-    return NextResponse.json({
-      id: session.user.id,
-      email: session.user.email || '',
-      name: session.user.name || '',
-      role: session.user.role,
-      profile: userWithProfile?.profile
-    });
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Ajouter des logs pour le débogage
+    console.log('User found:', userId);
+    console.log('User profile:', user.profile ? 'exists' : 'not found');
+
+    return NextResponse.json(user);
   } catch (error) {
     console.error('Error in profile GET:', error);
-    return new NextResponse('Internal Server Error', { status: 500 });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 export async function PUT(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    // Récupérer l'userId de la requête
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get('userId');
+
+    if (!userId) {
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+    }
+
+    // Vérifier si l'utilisateur existe dans Supabase avec le client admin
+    const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(userId);
+    
+    if (userError || !userData.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await req.json();
     
-    // Validation des champs requis du modèle User
-    const requiredFields = ['email', 'username', 'country', 'currency', 'points_rate', 'region'];
-    const missingFields = requiredFields.filter(field => !body[field]);
+    // Validation des champs requis pour la mise à jour du profil
+    const requiredFields = ['firstName', 'lastName', 'country'];
+    const missingFields = requiredFields.filter(field => body[field] === undefined);
     
     if (missingFields.length > 0) {
       return NextResponse.json({ 
@@ -48,48 +62,23 @@ export async function PUT(req: Request) {
       }, { status: 400 });
     }
 
+    // Mise à jour du profil
     const updateData = {
-      where: {
-        id: session.user.id,
-      },
-      data: {
-        email: body.email,
-        username: body.username,
-        password_hash: body.password_hash, // Si fourni
-        first_name: body.first_name || null,
-        last_name: body.last_name || null,
-        phone_number: body.phone_number || null,
-        country: body.country,
-        currency: body.currency,
-        points_rate: body.points_rate,
-        region: body.region,
-        profile: {
-          upsert: {
-            create: {
-              firstName: body.first_name || '',
-              lastName: body.last_name || '',
-              country: body.country
-            },
-            update: {
-              firstName: body.first_name || undefined,
-              lastName: body.last_name || undefined,
-              country: body.country
-            }
-          }
-        }
-      },
-      include: {
-        profile: true,
-      },
+      firstName: body.firstName,
+      lastName: body.lastName,
+      country: body.country,
+      ...(body.phoneNumber && { phoneNumber: body.phoneNumber }),
+      ...(body.birthdate && { birthdate: new Date(body.birthdate) }),
+      ...(body.region && { region: body.region }),
+      ...(body.currency && { currency: body.currency }),
     };
 
-    console.log('Update Data:', updateData); // Pour le débogage
-
-    const user = await prisma.user.update(updateData);
-    return NextResponse.json({ 
-      success: true,
-      user 
+    const updatedProfile = await prisma.profile.update({
+      where: { userId },
+      data: updateData,
     });
+
+    return NextResponse.json(updatedProfile);
   } catch (error) {
     console.error('Error in profile PUT:', error);
     

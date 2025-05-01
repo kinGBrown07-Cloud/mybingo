@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase-client';
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -30,7 +31,8 @@ interface Transaction {
 }
 
 export default function TransactionsPage() {
-  const { data: session } = useSession();
+  const router = useRouter();
+  const [user, setUser] = useState<{ id: string; email?: string; user_metadata?: Record<string, unknown>; app_metadata?: Record<string, unknown> } | null>(null);
   const { toast } = useToast();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -62,10 +64,38 @@ export default function TransactionsPage() {
   }, [toast]);
 
   useEffect(() => {
-    if (session?.user) {
-      fetchTransactions();
+    async function checkAuth() {
+      try {
+        // Vérifier si l'utilisateur est authentifié
+        const { data: { user: supabaseUser }, error } = await supabase.auth.getUser();
+        
+        if (error || !supabaseUser) {
+          console.log('Utilisateur non authentifié, redirection vers login');
+          router.push('/auth/login');
+          return;
+        }
+        
+        // Vérifier si l'utilisateur est admin
+        const isAdmin = 
+          supabaseUser.user_metadata?.role === 'ADMIN' || 
+          supabaseUser.app_metadata?.role === 'ADMIN';
+        
+        if (!isAdmin) {
+          console.log('Utilisateur non admin, redirection vers dashboard');
+          router.push('/dashboard');
+          return;
+        }
+        
+        setUser(supabaseUser);
+        fetchTransactions();
+      } catch (error) {
+        console.error('Erreur lors de la vérification de l\'authentification:', error);
+        router.push('/auth/login');
+      }
     }
-  }, [session, fetchTransactions]);
+    
+    checkAuth();
+  }, [router, fetchTransactions]);
 
   const getStatusColor = (status: string) => {
     switch (status) {

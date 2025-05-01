@@ -1,31 +1,61 @@
 "use client";
 
-import { useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Sidebar } from '@/components/admin/sidebar';
+import { supabase } from '@/lib/supabase-client';
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { data: session, status } = useSession();
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    if (status === "loading") return;
-
-    if (!session?.user || session.user.role !== "ADMIN") {
-      router.push("/dashboard");
+    async function checkAuth() {
+      try {
+        // Vérifier si l'utilisateur est authentifié
+        const { data: { user }, error } = await supabase.auth.getUser();
+        
+        if (error || !user) {
+          console.log('Utilisateur non authentifié, redirection vers login');
+          router.push('/auth/login');
+          return;
+        }
+        
+        console.log('Utilisateur authentifié:', user.id);
+        
+        // Vérifier si l'utilisateur est admin
+        const isUserAdmin = 
+          user.user_metadata?.role === 'ADMIN' || 
+          user.app_metadata?.role === 'ADMIN';
+        
+        if (!isUserAdmin) {
+          console.log('Utilisateur non admin, redirection vers dashboard');
+          router.push('/dashboard');
+          return;
+        }
+        
+        setIsAdmin(true);
+      } catch (error) {
+        console.error('Erreur lors de la vérification de l\'authentification:', error);
+        router.push('/auth/login');
+      } finally {
+        setLoading(false);
+      }
     }
-  }, [session, status, router]);
+    
+    checkAuth();
+  }, [router]);
 
-  if (status === "loading") {
-    return <div>Chargement...</div>;
+  if (loading) {
+    return <div className="flex items-center justify-center h-screen">Chargement...</div>;
   }
 
-  if (!session?.user || session.user.role !== "ADMIN") {
+  if (!isAdmin) {
     return null;
   }
 

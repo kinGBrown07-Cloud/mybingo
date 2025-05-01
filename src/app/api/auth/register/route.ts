@@ -4,8 +4,21 @@ import { Region, Currency } from '@/types/prisma';
 import { hash } from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '@/lib/db';
-import { sendVerificationEmail } from '@/lib/email';
-import { boolean } from 'zod';
+import { createClient } from '@supabase/supabase-js';
+
+// Initialisation de Supabase côté serveur
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
+
+// Vérifier si les variables d'environnement sont définies
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.error('Les variables d\'environnement NEXT_PUBLIC_SUPABASE_URL et/ou SUPABASE_SERVICE_KEY ne sont pas définies');
+}
+
+const supabase = createClient(
+  supabaseUrl || '',
+  supabaseServiceKey || ''
+);
 
 interface RegisterData {
   email: string;
@@ -24,6 +37,7 @@ interface RegisterData {
 export async function POST(req: Request) {
   try {
     const data = await req.json() as RegisterData;
+    console.log("Données reçues:", data);
 
     // Validation des données
     if (!data.email || !data.password || !data.firstName || !data.lastName || 
@@ -34,125 +48,65 @@ export async function POST(req: Request) {
       );
     }
 
-    // Vérifier si l'email existe déjà
-    const existingUser = await prisma.user.findUnique({
-      where: { email: data.email }
-    });
-
-    if (existingUser) {
-      return NextResponse.json(
-        { error: 'Cet email est déjà utilisé' },
-        { status: 400 }
-      );
-    }
-
-    // Hasher le mot de passe
-    const hashedPassword = await hash(data.password, 10);
-
-    // Générer le nom d'utilisateur
-    const username = `${data.firstName.toLowerCase()}_${Math.random().toString(36).substring(2, 7)}`;
-
-    // Générer le token de vérification
-    const verificationToken = uuidv4();
-    const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 heures
-
+    // Test de connexion à Supabase
+    console.log('Test de connexion à Supabase...');
+    console.log('URL de l\'API Supabase:', process.env.NEXT_PUBLIC_SUPABASE_URL);
+    console.log('Clé d\'API disponible:', process.env.SUPABASE_SERVICE_KEY ? 'Oui' : 'Non');
+    
     try {
-      // Créer l'utilisateur et son profil en utilisant une transaction SQL brute
-      const result = await prisma.$transaction(async (tx) => {
-        const users = await tx.$queryRaw<Array<{ id: string; email: string; }>>` 
-          INSERT INTO users (
-            email, 
-            password_hash, 
-            username,
-            role,
-            region,
-            first_name,
-            last_name,
-            phone_number,
-            verification_token,
-            verification_expires,
-            is_active,
-            is_verified,
-            country,
-            currency,
-            points_rate
-          ) VALUES (
-            ${data.email},
-            ${hashedPassword},
-            ${username},
-            'USER',
-            ${data.region},
-            ${data.firstName},
-            ${data.lastName},
-            ${data.phoneNumber},
-            ${verificationToken},
-            ${verificationExpires},
-            true,
-            false,
-            ${data.country},
-            ${data.currency},
-            1.0
-          )
-          RETURNING *
-        `;
-
-        const user = users[0];
-        if (!user) throw new Error("Échec de la création de l'utilisateur");
-
-        const profiles = await tx.$queryRaw<Array<{ id: string; user_id: string; }>>` 
-          INSERT INTO profiles (
-            user_id,
-            first_name,
-            last_name,
-            phone_number,
-            country
-          ) VALUES (
-            ${user.id},
-            ${data.firstName},
-            ${data.lastName},
-            ${data.phoneNumber},
-            ${data.country}
-          )
-          RETURNING *
-        `;
-
-        const profile = profiles[0];
-        if (!profile) throw new Error("Échec de la création du profil");
-
-        return { ...user, profile };
-      });
-
-      // Envoyer l'email de vérification
-      const emailSent = await sendVerificationEmail(data.email, verificationToken);
-
-      if (!emailSent) {
-        // Si l'envoi de l'email échoue, on supprime l'utilisateur
-        await prisma.$executeRaw`
-          DELETE FROM users WHERE id = ${result.id}
-        `;
-
+      // Test simple pour vérifier si Supabase est accessible
+      const { data: authSettings, error: settingsError } = await supabase.auth.getSession();
+      
+      if (settingsError) {
+        console.error('Erreur lors du test de connexion à Supabase:', settingsError);
         return NextResponse.json(
-          { error: "Une erreur est survenue lors de l'envoi de l'email de vérification" },
+          { error: 'Impossible de se connecter à Supabase: ' + settingsError.message },
           { status: 500 }
         );
       }
-
+      
+      console.log('Connexion à Supabase réussie');
+      
+      // Tentative d'inscription très simplifiée
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          // Aucune métadonnée pour simplifier
+        }
+      });
+      
+      console.log('Réponse de Supabase signUp:', JSON.stringify(authData, null, 2));
+      
+      if (authError) {
+        console.error('Erreur lors de l\'inscription Supabase:', authError);
+        return NextResponse.json(
+          { error: 'Erreur d\'inscription: ' + authError.message },
+          { status: 400 }
+        );
+      }
+      
+      // Si nous arrivons ici, l'inscription a réussi
       return NextResponse.json({
         success: true,
-        message: 'Un email de vérification a été envoyé à votre adresse email'
+        message: 'Compte créé avec succès. Veuillez vérifier votre email pour confirmer votre inscription.',
+        redirectUrl: `/auth/email-sent?email=${encodeURIComponent(data.email)}`
       });
-
+      
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('Exception lors de l\'opération Supabase:', error);
       return NextResponse.json(
-        { error: 'Une erreur est survenue lors de l\'inscription' },
+        { error: 'Une erreur est survenue: ' + (error instanceof Error ? error.message : String(error)) },
         { status: 500 }
       );
     }
+
+    // Note: Nous avons simplifié le code pour ne pas créer d'utilisateur dans Prisma
+    // Cela nous permet d'isoler le problème avec Supabase
   } catch (error) {
     console.error('Registration error:', error);
     return NextResponse.json(
-      { error: 'Une erreur est survenue lors de l\'inscription' },
+      { error: 'Une erreur est survenue lors de l\'inscription: ' + (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     );
   }

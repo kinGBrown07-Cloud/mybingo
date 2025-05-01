@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "@/hooks/useUser";
 import { PayPalButton } from "@/components/paypal-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { paypalService } from "@/lib/services/paypalService";
 import { pricingService } from "@/lib/services/pricingService";
+import { Region } from "@/lib/constants/regions";
+import { Profile } from "@/types/db";
 
+// Interface pour les détails de paiement PayPal
 interface PayPalPaymentDetails {
   id: string;
   payer: {
@@ -19,8 +22,23 @@ interface PayPalPaymentDetails {
 export default function PointsPage() {
   const { user } = useUser();
   const [amount, setAmount] = useState("");
+  const [userProfile, setUserProfile] = useState<Profile | null>(null);
 
-  if (!user) {
+  // Charger le profil complet de l'utilisateur
+  useEffect(() => {
+    if (user) {
+      fetch(`/api/profile?userId=${user.userId}`)
+        .then(response => response.json())
+        .then(data => {
+          setUserProfile(data);
+        })
+        .catch(error => {
+          console.error('Erreur lors du chargement du profil:', error);
+        });
+    }
+  }, [user]);
+
+  if (!user || !userProfile) {
     return (
       <div className="container mx-auto p-6">
         <h1 className="text-2xl font-bold mb-4">Connectez-vous pour acheter des points</h1>
@@ -61,8 +79,10 @@ export default function PointsPage() {
     }
   };
 
-  const pointsToReceive = pricingService.calculatePoints(parseFloat(amount) || 0, user.region);
-  const currency = pricingService.getCurrency(user.region);
+  // Utiliser le pays de l'utilisateur pour déterminer la région
+  const userRegion = userProfile?.region ? userProfile.region as Region : Region.EUROPE;
+  const pointsToReceive = pricingService.calculatePoints(parseFloat(amount) || 0, userRegion);
+  const currency = pricingService.getCurrency(userRegion);
 
   return (
     <div className="container mx-auto p-6">
@@ -77,7 +97,7 @@ export default function PointsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">{user.points} points</p>
+            <p className="text-2xl font-bold">{userProfile.points || 0} points</p>
           </CardContent>
         </Card>
 
@@ -85,7 +105,7 @@ export default function PointsPage() {
           <CardHeader>
             <CardTitle>Acheter des points</CardTitle>
             <CardDescription>
-              Taux de conversion : 1{currency.symbol} = {pricingService.getPointsRate(user.region)} points
+              Taux de conversion : 1{currency.symbol} = {userProfile.pointsRate || pricingService.getPointsRate(userRegion)} points
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -107,8 +127,14 @@ export default function PointsPage() {
 
               {amount && parseFloat(amount) >= 1 && (
                 <PayPalButton
-                  amount={amount}
-                  onSuccess={handlePaymentSuccess}
+                  amount={parseFloat(amount)}
+                  currency={currency.code}
+                  region={userRegion}
+                  userId={user.userId}
+                  onSuccess={() => {
+                    // Rediriger vers la page de succès
+                    window.location.href = '/points/success';
+                  }}
                 />
               )}
             </div>

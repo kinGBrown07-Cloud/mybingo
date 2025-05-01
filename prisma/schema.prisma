@@ -39,7 +39,9 @@ model User {
   sessions            Session[]
   transactions        Transaction[]
   userPrizes          UserPrize[]
-
+  createdAds          AdBanner[]    @relation("AdCreator")
+  editedAds           AdBanner[]    @relation("AdEditor")
+  
   @@map("users")
 }
 
@@ -198,11 +200,14 @@ enum GameType {
 }
 
 enum TransactionType {
-  DEPOSIT    @map("DEPOSIT")
-  WITHDRAWAL @map("WITHDRAWAL")
-  BET        @map("BET")
-  WIN        @map("WIN")
-  REFUND     @map("REFUND")
+  DEPOSIT        @map("DEPOSIT")
+  WITHDRAWAL     @map("WITHDRAWAL")
+  BET            @map("BET")
+  WIN            @map("WIN")
+  REFUND         @map("REFUND")
+  PAYMENT        @map("PAYMENT")
+  PAYMENT_PENDING @map("PAYMENT_PENDING")
+  PAYMENT_FAILED @map("PAYMENT_FAILED")
 }
 
 enum TransactionStatus {
@@ -230,4 +235,36 @@ enum Region {
   EUROPE       @map("EUROPE")
   AMERICAS     @map("AMERICAS")
   ASIA         @map("ASIA")
+}
+
+enum AdPosition {
+  TOP
+  MIDDLE
+  BOTTOM
+}
+
+model AdBanner {
+  id              String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String      @map("title")
+  description     String      @map("description")
+  imageUrl        String      @map("image_url")
+  ctaText         String      @map("cta_text")
+  ctaLink         String      @map("cta_link")
+  backgroundColor String?     @map("background_color")
+  textColor       String?     @map("text_color")
+  position        AdPosition  @map("position")
+  isActive        Boolean     @default(true) @map("is_active")
+  startDate       DateTime    @map("start_date")
+  endDate         DateTime    @map("end_date")
+  priority        Int         @default(0) @map("priority")
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+  createdBy       String      @map("created_by") @db.Uuid
+  updatedBy       String?     @map("updated_by") @db.Uuid
+  
+  // Relations
+  creator         User        @relation("AdCreator", fields: [createdBy], references: [id], onDelete: Cascade)
+  editor          User?       @relation("AdEditor", fields: [updatedBy], references: [id], onDelete: SetNull)
+
+  @@map("ad_banners")
 }

@@ -8,7 +8,7 @@ interface BalanceStore {
   updateCoins: (delta: number) => void;
 }
 
-export const useBalance = create<BalanceStore>((set: any) => ({
+export const useBalance = create<BalanceStore>((set) => ({
   coins: 0,
   setCoins: (coins: number) => set({ coins }),
   updateCoins: (delta: number) => set((state: BalanceStore) => ({ coins: state.coins + delta })),

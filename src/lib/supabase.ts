@@ -2,50 +2,11 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
 import type { GameType, GameSession, CardFlip, Transaction } from '@/types/game';
 import type { Profile, Referral } from '@/types/database';
-import { Pool, PoolConfig } from 'pg'
-import { parse } from 'url'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
-
-// Parse the connection string
-const connectionString = process.env.DATABASE_URL!
-const { host, port, auth, pathname } = parse(connectionString)
-
-// Configure connection pool
-const poolConfig: PoolConfig = {
-  user: auth?.split(':')[0],
-  password: auth?.split(':')[1],
-  host: host || '',
-  port: parseInt(port || '5432'),
-  database: pathname?.split('/')[1],
-  ssl: {
-    rejectUnauthorized: false
-  },
-  max: 20, // Maximum number of clients in the pool
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-}
-
-export const pool = new Pool(poolConfig)
-
-// Add event listener for errors
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle client', err)
-  process.exit(-1)
-})
-
-// Helper function to execute queries
-export async function query(text: string, params?: unknown[]) {
-  const client = await pool.connect()
-  try {
-    return await client.query(text, params)
-  } finally {
-    client.release()
-  }
-}
 
 // Service pour la gestion des utilisateurs
 export const userService = {
@@ -570,3 +531,6 @@ export const adminService = {
     return true;
   }
 };
+
+// Déplacer l'importation et l'utilisation de pg dans un fichier séparé qui ne sera utilisé que côté serveur
+// Cela évite les erreurs "Can't resolve 'dns'" côté client

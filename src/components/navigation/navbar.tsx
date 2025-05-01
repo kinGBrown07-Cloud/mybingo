@@ -9,14 +9,64 @@ import { useToast } from "@/components/ui/use-toast";
 import { UserNav } from "./user-nav";
 import { MainNav } from "./main-nav";
 import Image from "next/image";
-import { useSession, signOut } from "next-auth/react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase-client";
+import { User } from "@supabase/supabase-js";
 
 export function Navbar() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const { toast } = useToast();
-  const loading = status === "loading";
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Vérifier si l'utilisateur est connecté au chargement du composant
+    const checkUser = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          // Récupérer les informations complètes de l'utilisateur depuis notre API
+          try {
+            const response = await fetch(`/api/users/${user.id}`);
+            if (response.ok) {
+              const userData = await response.json();
+              // Fusionner les données Supabase et Prisma
+              setUser({
+                ...user,
+                role: userData.role || user.user_metadata?.role || 'USER'
+              });
+            } else {
+              setUser(user);
+            }
+          } catch (apiError) {
+            console.error("Erreur lors de la récupération des données utilisateur:", apiError);
+            setUser(user);
+          }
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération de l'utilisateur:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // S'abonner aux changements d'état d'authentification
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+      setLoading(false);
+    });
+
+    checkUser();
+
+    // Nettoyer l'abonnement
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   if (loading) {
     return (
@@ -38,7 +88,18 @@ export function Navbar() {
   }
 
   const handleLogout = async () => {
-    await signOut();
+    const { error } = await supabase.auth.signOut();
+    
+    if (error) {
+      console.error("Erreur lors de la déconnexion:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la déconnexion",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     toast({
       title: "Déconnexion réussie",
       description: "À bientôt !",
@@ -59,14 +120,15 @@ export function Navbar() {
         <MainNav className="mx-6" />
 
         <div className="ml-auto flex items-center space-x-6">
-          {session?.user ? (
+          {user ? (
             <UserNav 
               profile={{
-                firstName: session.user.name?.split(' ')[0] || '',
-                lastName: session.user.name?.split(' ')[1] || '',
-                email: session.user.email || '',
-                image: session.user.image,
-                photoId: session.user.photoId
+                firstName: user.user_metadata?.first_name || '',
+                lastName: user.user_metadata?.last_name || '',
+                email: user.email || '',
+                image: user.user_metadata?.avatar_url,
+                photoId: user.user_metadata?.photo_id,
+                role: user.role || user.user_metadata?.role || 'USER'
               }} 
               onLogout={handleLogout} 
             />

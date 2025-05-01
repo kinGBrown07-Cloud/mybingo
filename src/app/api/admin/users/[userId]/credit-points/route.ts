@@ -1,51 +1,47 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
-import { authOptions } from "@/lib/auth";
-import { UserRole, TransactionType, TransactionStatus } from "@prisma/client";
+import { TransactionType, TransactionStatus } from "@prisma/client";
+import { supabaseAdmin } from "@/lib/supabase-admin";
+import { type NextRequest } from "next/server";
 
-export async function POST(
-  request: Request,
-  { params }: { params: { userId: string } }
-) {
+export async function POST(request: NextRequest, context: { params: { userId: string } }) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || session.user.role !== UserRole.ADMIN) {
+    // Vérifier l'authentification avec Supabase
+    const { data: { user } } = await supabaseAdmin.auth.getUser();
+    
+    if (!user || !user.user_metadata?.role || user.user_metadata.role !== 'ADMIN') {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const { points } = await request.json();
-    const { userId } = params;
+    const { userId } = context.params;
 
     if (!points || isNaN(points) || points <= 0) {
       return new NextResponse("Invalid points value", { status: 400 });
     }
 
     // Mettre à jour les points de l'utilisateur et créer une transaction
-    const [updatedProfile, transaction] = await prisma.$transaction([
-      // Mettre à jour le profil
-      prisma.profile.update({
-        where: { userId },
+    const [updatedUser, transaction] = await prisma.$transaction([
+      // Mettre à jour les points de l'utilisateur
+      prisma.user.update({
+        where: { id: userId },
         data: { 
-          coins: { increment: points }
+          points: { increment: points }
         },
       }),
       // Créer une transaction
       prisma.transaction.create({
         data: {
-          profile: { connect: { userId } },
+          userId,
           type: TransactionType.WIN,
-          amount: points,
           pointsAmount: points,
-          currency: "XOF",
           status: TransactionStatus.COMPLETED
         },
       }),
     ]);
 
     return NextResponse.json({
-      profile: updatedProfile,
+      user: updatedUser,
       transaction: transaction,
     });
   } catch (error) {
