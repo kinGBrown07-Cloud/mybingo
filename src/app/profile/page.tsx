@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,11 +8,11 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { User, Profile } from '@/types/db';
 import { useBalance } from '@/hooks/use-balance';
-import { Coins, Edit2, Save, Camera, Loader2 } from 'lucide-react';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Coins, Edit2, Save, Loader2 } from 'lucide-react';
 import { PromoteButton } from '@/components/admin/promote-button';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
+import { ProfileImageUpload } from '@/components/profile-image-upload';
 
 export default function ProfilePage() {
   const { toast } = useToast();
@@ -21,8 +21,6 @@ export default function ProfilePage() {
   const supabase = createClientComponentClient();
   const [isEditing, setIsEditing] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isUploading, setIsUploading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     username: '',
@@ -134,63 +132,16 @@ export default function ProfilePage() {
     checkAuth();
   }, [toast, router, supabase.auth]); // Ajout de toast comme dépendance
 
-  const handleImageUpload = async (file: File) => {
-    try {
-      setIsUploading(true);
-      const uploadData = new FormData();
-      uploadData.append('file', file);
-
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: uploadData,
-      });
-
-      if (response.ok) {
-        const { url } = await response.json();
-        // Mise à jour du profil avec la nouvelle URL d'image
-        const profileResponse = await fetch('/api/profile', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...formData,
-            image_url: url
-          }),
-        });
-
-        if (profileResponse.ok) {
-          const updatedUser = await profileResponse.json();
-          setUser(updatedUser);
-          // Mettre à jour le formData avec les nouvelles données
-          setFormData({
-            username: updatedUser.profile?.username || '',
-            email: updatedUser.email || '',
-            phoneNumber: updatedUser.profile?.phoneNumber || '',
-            country: updatedUser.profile?.country || ''
-          });
-          
-          // Rafraîchir la session pour mettre à jour l'image dans la navbar
-          await fetch('/api/auth/session');
-          window.location.reload(); // Forcer le rechargement pour mettre à jour la navbar
-          
-          toast({
-            title: "Succès",
-            description: "Photo de profil mise à jour avec succès.",
-          });
+  const handleImageUploaded = (image_url: string) => {
+    // Mettre à jour l'utilisateur avec la nouvelle URL d'image
+    if (user && user.profile) {
+      setUser({
+        ...user,
+        profile: {
+          ...user.profile,
+          image_url: image_url
         }
-      } else {
-        throw new Error('Erreur lors du téléchargement');
-      }
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible de mettre à jour la photo de profil.",
       });
-    } finally {
-      setIsUploading(false);
     }
   };
 
@@ -199,14 +150,27 @@ export default function ProfilePage() {
     if (!isEditing) return; // Ne rien faire si on n'est pas en mode édition
 
     try {
-      const response = await fetch('/api/profile', {
+      // Vérifier si l'utilisateur est authentifié
+      const { data: { user: supabaseUser } } = await supabase.auth.getUser();
+      
+      if (!supabaseUser) {
+        toast({
+          variant: "destructive",
+          title: "Erreur d'authentification",
+          description: "Veuillez vous reconnecter.",
+        });
+        router.push('/auth/login');
+        return;
+      }
+
+      const response = await fetch(`/api/profile?userId=${supabaseUser.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
+          firstName: formData.username.split(' ')[0] || '',
+          lastName: formData.username.split(' ')[1] || '',
           phoneNumber: formData.phoneNumber,
           country: formData.country
         }),
@@ -214,14 +178,11 @@ export default function ProfilePage() {
 
       if (response.ok) {
         const updatedUser = await response.json();
-        setUser(updatedUser);
-        // Mettre à jour le formData avec les nouvelles données
-        setFormData({
-          username: updatedUser.profile?.username || '',
-          email: updatedUser.email || '',
-          phoneNumber: updatedUser.profile?.phoneNumber || '',
-          country: updatedUser.profile?.country || ''
+        setUser({
+          ...user,
+          profile: updatedUser
         });
+        
         setIsEditing(false);
         toast({
           title: "Succès",
@@ -229,14 +190,14 @@ export default function ProfilePage() {
         });
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Erreur lors de la mise à jour');
+        throw new Error(errorData.error || 'Erreur lors de la mise à jour');
       }
     } catch (error) {
       console.error('Error updating profile:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Impossible de mettre à jour le profil.",
+        description: error instanceof Error ? error.message : "Impossible de mettre à jour le profil.",
       });
     }
   };
@@ -276,42 +237,14 @@ export default function ProfilePage() {
         <CardContent>
           <div className="space-y-6">
             {/* Photo de profil */}
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <Avatar className="h-24 w-24">
-                  <AvatarImage src={user?.profile?.image_url || ''} />
-                  <AvatarFallback>
-                    {user?.profile?.username?.charAt(0).toUpperCase() || 'U'}
-                  </AvatarFallback>
-                </Avatar>
-                <Button
-                  size="icon"
-                  variant="secondary"
-                  className="absolute bottom-0 right-0 rounded-full"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={isUploading}
-                >
-                  {isUploading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Camera className="h-4 w-4" />
-                  )}
-                </Button>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  className="hidden"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleImageUpload(file);
-                  }}
-                />
-              </div>
-              <div>
-                <h3 className="text-lg font-medium">{user?.profile?.username}</h3>
-                <p className="text-sm text-muted-foreground">{user?.email}</p>
-              </div>
+            <div className="flex items-center justify-center mb-6">
+              <ProfileImageUpload 
+                userId={user.id}
+                currentImageUrl={user.profile?.image_url || ''}
+                firstName={user.profile?.firstName || user.profile?.username?.split(' ')[0] || 'U'}
+                lastName={user.profile?.lastName || user.profile?.username?.split(' ')[1] || ''}
+                onImageUploaded={handleImageUploaded}
+              />
             </div>
 
             {/* Solde */}
@@ -342,7 +275,7 @@ export default function ProfilePage() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    disabled={!isEditing}
+                    disabled={true} // Email ne peut pas être modifié
                   />
                 </div>
 

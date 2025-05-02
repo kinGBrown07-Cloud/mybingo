@@ -58,6 +58,7 @@ model Profile {
   firstName    String        @map("first_name")
   lastName     String        @map("last_name")
   phoneNumber  String?       @map("phone_number")
+  image_url    String?       @map("image_url")
   gameSessions GameSession[]
   user         User          @relation(fields: [userId], references: [id])
 

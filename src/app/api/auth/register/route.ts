@@ -102,6 +102,59 @@ export async function POST(req: Request) {
         );
       }
       
+      // Créer l'utilisateur dans la base de données Prisma
+      if (authData.user) {
+        try {
+          // Vérifier si l'utilisateur existe déjà dans Prisma
+          const existingUser = await prisma.user.findUnique({
+            where: { email: data.email }
+          });
+          
+          if (!existingUser) {
+            // Créer l'utilisateur dans Prisma
+            const newUser = await prisma.user.create({
+              data: {
+                id: authData.user.id,
+                email: data.email,
+                passwordHash: await hash(data.password, 10),
+                username: data.email.split('@')[0] + '_' + Math.floor(Math.random() * 1000),
+                role: UserRole.USER,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                phoneNumber: data.phoneNumber,
+                country: data.country,
+                postalCode: '',
+                address: '',
+                city: '',
+                points: 0,
+                totalGamesPlayed: 0,
+                isVerified: false,
+                isActive: true,
+                currency: data.currency,
+                pointsRate: data.region === Region.BLACK_AFRICA ? 150 : data.region === Region.NORTH_AFRICA ? 250 : 1,
+                region: data.region,
+                profile: {
+                  create: {
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    phoneNumber: data.phoneNumber,
+                    country: data.country
+                  }
+                }
+              }
+            });
+            
+            console.log('Utilisateur créé dans Prisma:', newUser.id);
+          } else {
+            console.log('Utilisateur déjà existant dans Prisma:', existingUser.id);
+          }
+        } catch (prismaError) {
+          console.error('Erreur lors de la création de l\'utilisateur dans Prisma:', prismaError);
+          // Ne pas bloquer l'inscription si la création dans Prisma échoue
+          // Une tâche de synchronisation pourrait être mise en place ultérieurement
+        }
+      }
+      
       // Si nous arrivons ici, l'inscription a réussi
       return NextResponse.json({
         success: true,
