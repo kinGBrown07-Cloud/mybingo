@@ -180,37 +180,28 @@ export function Navbar() {
                 <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-zinc-900 border-zinc-800">
                   <div className="flex flex-col space-y-6 py-6">
                     <div className="flex flex-col space-y-3">
-                      <Link href="/games/memory" className="text-lg font-medium hover:text-purple-400 transition-colors">Jeux Memory</Link>
-                      <Link href="/games/blackjack" className="text-lg font-medium hover:text-purple-400 transition-colors">Blackjack</Link>
-                      <Link href="/games/slots" className="text-lg font-medium hover:text-purple-400 transition-colors">Machines à sous</Link>
+                      <Link href="/games/memory" className="text-lg font-medium hover:text-purple-400 transition-colors">Memory</Link>
+                      <Link href="/communities" className="text-lg font-medium hover:text-purple-400 transition-colors">Communautés</Link>
                       <Link href="/shop" className="text-lg font-medium hover:text-purple-400 transition-colors">Boutique</Link>
-                      <Link href="/leaderboard" className="text-lg font-medium hover:text-purple-400 transition-colors">Classement</Link>
-                      <Link href="/help" className="text-lg font-medium hover:text-purple-400 transition-colors">Aide</Link>
+                      <Link href="/buy-points" className="text-lg font-medium hover:text-purple-400 transition-colors">Acheter des points</Link>
                     </div>
                     <div className="flex flex-col space-y-4 pt-6 border-t border-zinc-800">
-                      <Link href="/auth/login">
+                      <Link href="/auth/login" className="w-full">
                         <Button 
                           variant="ghost" 
-                          size="lg"
                           className="w-full text-base text-white hover:text-purple-400 hover:bg-zinc-800"
                         >
                           Connexion
                         </Button>
                       </Link>
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button 
-                            variant="default" 
-                            size="lg"
-                            className="w-full text-base bg-purple-600 hover:bg-purple-700 text-white"
-                          >
-                            Inscription
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
-                          <RegistrationForm />
-                        </DialogContent>
-                      </Dialog>
+                      <Link href="/auth/register" className="w-full">
+                        <Button 
+                          variant="default" 
+                          className="w-full text-base bg-purple-600 hover:bg-purple-700 text-white"
+                        >
+                          Inscription
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </SheetContent>

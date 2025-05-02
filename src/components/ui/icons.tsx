@@ -7,6 +7,9 @@ import {
   Coins,
   Check,
   XCircle,
+  CreditCard,
+  Users,
+  Gift,
   type LucideIcon,
 } from "lucide-react"
 
@@ -21,4 +24,8 @@ export const Icons = {
   slot: Coins,
   check: Check,
   xCircle: XCircle,
+  creditCard: CreditCard,
+  users: Users,
+  jackpot: Gift,
+  community: Users,
 }

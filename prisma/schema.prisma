@@ -41,6 +41,10 @@ model User {
   userPrizes          UserPrize[]
   createdAds          AdBanner[]    @relation("AdCreator")
   editedAds           AdBanner[]    @relation("AdEditor")
+  communityMembers    CommunityMember[]
+  createdCommunities  Community[]
+  communityTransactions CommunityTransaction[]
+  createdCauses       CommunityCause[]
   
   @@map("users")
 }
@@ -82,6 +86,7 @@ model GameSession {
   hasWon       Boolean       @default(false) @map("has_won")
   matchedPairs Int           @default(0) @map("matched_pairs")
   result       Json?         @map("result")
+  metadata     Json?         @map("metadata")
   createdAt    DateTime      @default(now()) @map("created_at")
   endedAt      DateTime?     @map("ended_at")
   cardFlips    CardFlip[]
@@ -89,6 +94,7 @@ model GameSession {
   profile      Profile       @relation(fields: [profileId], references: [id])
   transactions Transaction[]
   userPrizes   UserPrize[]
+  communityTransactions CommunityTransaction[]
 
   @@map("game_sessions")
 }
@@ -193,10 +199,122 @@ model DailyStat {
   @@map("daily_stats")
 }
 
+model Community {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String            @map("name")
+  description     String?           @map("description")
+  cause           String            @map("cause")
+  targetAmount    Float             @map("target_amount")
+  currentAmount   Float             @default(0) @map("current_amount")
+  imageUrl        String?           @map("image_url")
+  isActive        Boolean           @default(true) @map("is_active")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @default(now()) @updatedAt @map("updated_at")
+  createdBy       String            @map("created_by") @db.Uuid
+  deletedAt       DateTime?         @map("deleted_at")
+  
+  // Relations
+  creator         User              @relation(fields: [createdBy], references: [id])
+  members         CommunityMember[]
+  transactions    CommunityTransaction[]
+  competitions    CommunityCompetition[]
+
+  @@map("communities")
+}
+
+model CommunityMember {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  communityId     String            @map("community_id") @db.Uuid
+  userId          String            @map("user_id") @db.Uuid
+  role            CommunityRole     @default(MEMBER) @map("role")
+  joinedAt        DateTime          @default(now()) @map("joined_at")
+  
+  // Relations
+  community       Community         @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([communityId, userId])
+  @@map("community_members")
+}
+
+model CommunityTransaction {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  communityId     String            @map("community_id") @db.Uuid
+  userId          String            @map("user_id") @db.Uuid
+  gameSessionId   String?           @map("game_session_id") @db.Uuid
+  amount          Int               @map("amount")
+  type            CommunityTransactionType @map("type")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  description     String?           @map("description")
+  
+  // Relations
+  community       Community         @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameSession     GameSession?      @relation(fields: [gameSessionId], references: [id], onDelete: SetNull)
+
+  @@map("community_transactions")
+}
+
+// Modèle pour les causes communautaires
+model CommunityCause {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String            @map("name")
+  description     String?           @map("description")
+  targetAmount    Float             @map("target_amount")
+  currentAmount   Float             @default(0) @map("current_amount")
+  imageUrl        String?           @map("image_url")
+  startDate       DateTime          @map("start_date")
+  endDate         DateTime?         @map("end_date")
+  isActive        Boolean           @default(true) @map("is_active")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @default(now()) @updatedAt @map("updated_at")
+  createdBy       String            @map("created_by") @db.Uuid
+  maxCommunities  Int               @default(5) @map("max_communities")
+  packPrice       Float             @map("pack_price")
+  winningAmount   Float             @map("winning_amount")
+  status          CauseStatus       @default(PENDING) @map("status")
+  
+  // Relations
+  creator         User              @relation(fields: [createdBy], references: [id])
+  competitions    CommunityCompetition[]
+
+  @@map("community_causes")
+}
+
+// Modèle pour les compétitions communautaires
+model CommunityCompetition {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  causeId         String            @map("cause_id") @db.Uuid
+  communityId     String            @map("community_id") @db.Uuid
+  hasPaid         Boolean           @default(false) @map("has_paid")
+  hasWon          Boolean           @default(false) @map("has_won")
+  joinedAt        DateTime          @default(now()) @map("joined_at")
+  paymentAmount   Float?            @map("payment_amount")
+  paymentDate     DateTime?         @map("payment_date")
+  
+  // Relations
+  cause           CommunityCause    @relation(fields: [causeId], references: [id])
+  community       Community         @relation(fields: [communityId], references: [id])
+
+  @@map("community_competitions")
+}
+
+
+
 enum GameType {
   FOODS   @map("FOODS")
   MODE    @map("MODE")
+  WHEEL   @map("WHEEL")
   JACKPOT @map("JACKPOT")
+  COMMUNITY_JACKPOT @map("COMMUNITY_JACKPOT")
+}
+
+// Enum pour le statut des causes
+enum CauseStatus {
+  PENDING    @map("PENDING")
+  ACTIVE     @map("ACTIVE")
+  COMPLETED  @map("COMPLETED")
+  CANCELLED  @map("CANCELLED")
 }
 
 enum TransactionType {
@@ -241,6 +359,21 @@ enum AdPosition {
   TOP
   MIDDLE
   BOTTOM
+}
+
+enum CommunityRole {
+  ADMIN     @map("ADMIN")
+  MODERATOR @map("MODERATOR")
+  MEMBER    @map("MEMBER")
+}
+
+enum CommunityTransactionType {
+  CONTRIBUTION @map("CONTRIBUTION")
+  GAME_WIN     @map("GAME_WIN")
+  WITHDRAWAL   @map("WITHDRAWAL")
+  BONUS        @map("BONUS")
+  COMPETITION_ENTRY @map("COMPETITION_ENTRY")
+  COMPETITION_WIN @map("COMPETITION_WIN")
 }
 
 model AdBanner {

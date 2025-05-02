@@ -1,40 +1,99 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CommunityNav } from '@/components/community-nav';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { toast } from 'react-hot-toast';
+
+type Community = {
+  id: string;
+  name: string;
+  cause: string;
+  totalEarnings: number;
+  currentAmount: number;
+  _count: {
+    members: number;
+  };
+  createdAt: string;
+};
 
 export default function CommunityLeaderboard() {
-  const communities = [
+  const [communities, setCommunities] = useState<Community[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCommunities = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/communities/leaderboard?limit=20');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch communities leaderboard');
+        }
+        
+        const data = await response.json();
+        setCommunities(data.communities);
+      } catch (err) {
+        console.error('Error fetching communities leaderboard:', err);
+        setError('Failed to load communities leaderboard. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCommunities();
+  }, []);
+
+  // Fallback data in case API fails
+  const fallbackCommunities = [
     {
-      rank: 1,
+      id: "1",
       name: "Save The Ocean",
       cause: "Protection des océans",
-      totalEarnings: "15 320€",
-      members: 128,
-      weeklyGrowth: "+12%",
-      affiliationEarnings: "1 532€"
+      totalEarnings: 15320,
+      currentAmount: 15320,
+      _count: { members: 128 },
+      createdAt: new Date().toISOString()
     },
     {
-      rank: 2,
+      id: "2",
       name: "Green Earth",
       cause: "Reforestation",
-      totalEarnings: "12 750€",
-      members: 95,
-      weeklyGrowth: "+8%",
-      affiliationEarnings: "1 275€"
+      totalEarnings: 12750,
+      currentAmount: 12750,
+      _count: { members: 95 },
+      createdAt: new Date().toISOString()
     },
     {
-      rank: 3,
+      id: "3",
       name: "Animal Rescue",
       cause: "Protection animale",
-      totalEarnings: "9 840€",
-      members: 73,
-      weeklyGrowth: "+15%",
-      affiliationEarnings: "984€"
+      totalEarnings: 9840,
+      currentAmount: 9840,
+      _count: { members: 73 },
+      createdAt: new Date().toISOString()
     }
   ];
+
+  // Use fallback data if API fails
+  const displayCommunities = communities.length > 0 ? communities : fallbackCommunities;
+
+  // Calculate weekly growth (mock data for now)
+  const getWeeklyGrowth = (community: Community) => {
+    // In a real implementation, this would compare current earnings with last week's
+    // For now, generate a random percentage between 5% and 20%
+    const randomGrowth = Math.floor(Math.random() * 16) + 5;
+    return `+${randomGrowth}%`;
+  };
+
+  // Calculate affiliation earnings (mock data for now)
+  const getAffiliationEarnings = (community: Community) => {
+    // In a real implementation, this would be calculated from actual affiliation data
+    // For now, use 10% of total earnings as a placeholder
+    return Math.round(community.totalEarnings * 0.1);
+  };
 
   return (
     <main className="min-h-screen bg-background">
@@ -49,94 +108,92 @@ export default function CommunityLeaderboard() {
           </Link>
         </div>
         
-        <div className="space-y-4">
-          {communities.map((community) => (
-            <div 
-              key={community.rank}
-              className="bg-zinc-800 rounded-xl p-6 border border-zinc-700 hover:border-zinc-600 transition-all"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className={`
-                    w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl
-                    ${community.rank === 1 ? 'bg-yellow-500 text-black' : 
-                      community.rank === 2 ? 'bg-gray-400 text-black' :
-                      community.rank === 3 ? 'bg-orange-700 text-white' :
-                      'bg-zinc-700 text-white'}
-                  `}>
-                    {community.rank}
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-white">{community.name}</h2>
-                    <p className="text-gray-400">{community.cause}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-emerald-400">
-                    {community.totalEarnings}
-                  </div>
-                  <div className="flex items-center justify-end space-x-4 mt-2">
-                    <div className="text-gray-400">
-                      {community.members} membres
-                    </div>
-                    <div className="text-green-400">
-                      {community.weeklyGrowth}
-                    </div>
-                  </div>
-                  <div className="mt-2 text-sm text-yellow-500">
-                    Gains d'affiliation : {community.affiliationEarnings}
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-zinc-700">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <div className="text-sm text-gray-400">Gains totaux</div>
-                    <div className="text-lg font-bold text-white">{community.totalEarnings}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-400">Gains d'affiliation</div>
-                    <div className="text-lg font-bold text-yellow-500">{community.affiliationEarnings}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-400">Croissance hebdo</div>
-                    <div className="text-lg font-bold text-green-400">{community.weeklyGrowth}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-zinc-800/50 rounded-lg p-6">
-            <h3 className="text-xl font-bold text-white mb-4">Comment grimper dans le classement ?</h3>
-            <ul className="space-y-2 text-gray-300">
-              <li className="flex items-center">
-                <span className="text-yellow-500 mr-2">→</span>
-                Invitez plus de membres à rejoindre votre communauté
-              </li>
-              <li className="flex items-center">
-                <span className="text-yellow-500 mr-2">→</span>
-                Participez régulièrement aux jeux disponibles
-              </li>
-              <li className="flex items-center">
-                <span className="text-yellow-500 mr-2">→</span>
-                Profitez des bonus communautaires pour maximiser vos gains
-              </li>
-            </ul>
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
           </div>
+        ) : error ? (
+          <div className="text-center py-10">
+            <p className="text-red-500">{error}</p>
+            <p className="text-gray-400 mt-2">Affichage des communautés par défaut</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {displayCommunities.map((community, index) => (
+              <Link 
+                href={`/communities/${community.id}`}
+                key={community.id}
+              >
+                <div className="bg-zinc-800 rounded-xl p-6 border border-zinc-700 hover:border-zinc-600 transition-all">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className={`
+                        w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl
+                        ${index === 0 ? 'bg-yellow-500 text-black' : 
+                          index === 1 ? 'bg-gray-400 text-black' :
+                          index === 2 ? 'bg-orange-700 text-white' :
+                          'bg-zinc-700 text-white'}
+                      `}>
+                        {index + 1}
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold text-white">{community.name}</h2>
+                        <p className="text-gray-400">{community.cause}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-emerald-400">
+                        {community.totalEarnings.toLocaleString('fr-FR')}€
+                      </div>
+                      <div className="flex items-center justify-end space-x-4 mt-2">
+                        <div className="text-gray-400">
+                          {community._count.members} membres
+                        </div>
+                        <div className="text-green-400">
+                          {getWeeklyGrowth(community)}
+                        </div>
+                      </div>
+                      <div className="mt-2 text-sm text-yellow-500">
+                        Gains d'affiliation : {getAffiliationEarnings(community).toLocaleString('fr-FR')}€
+                      </div>
+                    </div>
+                  </div>
 
-          <div className="bg-gradient-to-br from-purple-900 to-indigo-900 rounded-lg p-6">
-            <h3 className="text-xl font-bold text-white mb-4">Programme d'Affiliation</h3>
-            <p className="text-gray-300 mb-4">
-              Gagnez 10% sur le premier gain de chaque membre que vous parrainez dans votre communauté.
-              Plus votre communauté grandit, plus vos gains augmentent !
-            </p>
+                  <div className="mt-4 pt-4 border-t border-zinc-700">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div>
+                        <div className="text-sm text-gray-400">Gains totaux</div>
+                        <div className="text-lg font-bold text-white">{community.totalEarnings.toLocaleString('fr-FR')}€</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-gray-400">Gains d'affiliation</div>
+                        <div className="text-lg font-bold text-yellow-500">{getAffiliationEarnings(community).toLocaleString('fr-FR')}€</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-gray-400">Date de création</div>
+                        <div className="text-lg font-bold text-white">{new Date(community.createdAt).toLocaleDateString('fr-FR')}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+        
+        <div className="mt-12 text-center">
+          <p className="text-gray-400 mb-6">
+            Rejoignez une communauté et contribuez à une cause qui vous tient à cœur
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/communities">
+              <Button className="w-full sm:w-auto bg-zinc-700 hover:bg-zinc-600 text-white px-8 py-4">
+                EXPLORER LES COMMUNAUTÉS
+              </Button>
+            </Link>
             <Link href="/communities/create">
-              <Button className="w-full bg-purple-500 hover:bg-purple-600 text-white">
-                CRÉER MA COMMUNAUTÉ
+              <Button className="w-full sm:w-auto bg-purple-500 hover:bg-purple-600 text-white px-8 py-4">
+                CRÉER UNE COMMUNAUTÉ
               </Button>
             </Link>
           </div>

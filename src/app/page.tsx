@@ -11,6 +11,7 @@ import { CardGamesSection } from '@/components/card-games-section';
 import { VideoSection } from '@/components/video-section';
 import { AdBanner } from '@/components/ad-banner';
 import type { AdBanner as AdBannerType } from '@/lib/services/adService';
+import { TopCommunities } from '@/components/top-communities';
 
 const mainVideo = {
   id: "main",
@@ -493,44 +494,7 @@ export default function Home() {
                 </p>
               </div>
               <div className="space-y-4 mb-6">
-                <div className="flex items-center justify-between bg-black/30 p-3 rounded-lg">
-                  <div className="flex items-center">
-                    <span className="text-yellow-500 font-bold mr-3">1</span>
-                    <div>
-                      <p className="text-white font-medium">Save The Ocean</p>
-                      <p className="text-sm text-gray-400">Protection des océans</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <Image
-                      src="/images/icons/money/coins.png"
-                      alt="Coins Icon"
-                      width={24}
-                      height={24}
-                      className="mr-2"
-                    />
-                    <span className="text-emerald-400 font-bold">15 320€</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between bg-black/30 p-3 rounded-lg">
-                  <div className="flex items-center">
-                    <span className="text-gray-400 font-bold mr-3">2</span>
-                    <div>
-                      <p className="text-white font-medium">Green Earth</p>
-                      <p className="text-sm text-gray-400">Reforestation</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <Image
-                      src="/images/icons/money/coins.png"
-                      alt="Coins Icon"
-                      width={24}
-                      height={24}
-                      className="mr-2"
-                    />
-                    <span className="text-emerald-400 font-bold">12 750€</span>
-                  </div>
-                </div>
+                <TopCommunities />
               </div>
               <Link href="/communities/leaderboard">
                 <Button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white">

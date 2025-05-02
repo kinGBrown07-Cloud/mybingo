@@ -66,6 +66,20 @@ export default function GamesPage() {
       badgeText: 'LOTS EXCEPTIONNELS',
       badgeColor: 'bg-yellow-500'
     },
+    {
+      id: 'community-jackpot',
+      name: 'Jackpot Communautaire',
+      description: 'Jouez pour votre communauté et gagnez des fonds pour soutenir sa cause. Trouvez la carte spéciale pour un gain collectif !',
+      image: '/images/games/cards/community-jackpot.png',
+      status: 'new',
+      minBet: '300 XOF',
+      maxWin: '1 000 000 XOF',
+      coinBet: '3 points',
+      path: '/games/community-jackpot',
+      themeColor: 'purple',
+      badgeText: 'NOUVEAU',
+      badgeColor: 'bg-indigo-600'
+    },
   ];
 
   return (

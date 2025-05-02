@@ -20,25 +20,31 @@ interface MainNavProps {
 const games = [
   {
     title: "Memory",
-    href: "/games/memory",
+    href: "/games/mode",
     description: "Testez votre mémoire et gagnez des points en trouvant les paires identiques.",
     icon: "gamepad",
   },
   {
-    title: "Blackjack",
-    href: "/games/blackjack",
-    description: "Le jeu de cartes classique du casino, affrontez le croupier pour gagner.",
-    icon: "cards",
+    title: "Jackpot",
+    href: "/games/jackpot",
+    description: "Participez aux tirages au sort pour gagner le jackpot.",
+    icon: "star",
   },
   {
-    title: "Machines à sous",
-    href: "/games/slots",
-    description: "Tentez votre chance sur nos machines à sous colorées et gagnantes.",
-    icon: "slot",
+    title: "Jackpot Communautaire",
+    href: "/games/community-jackpot",
+    description: "Jouez avec votre communauté pour gagner des récompenses collectives.",
+    icon: "shop",
   },
 ];
 
 const rewards = [
+  {
+    title: "Communautés",
+    href: "/communities",
+    description: "Rejoignez ou créez des communautés pour participer à des causes ensemble.",
+    icon: "shop",
+  },
   {
     title: "Boutique",
     href: "/shop",
@@ -46,16 +52,10 @@ const rewards = [
     icon: "shop",
   },
   {
-    title: "Classement",
-    href: "/leaderboard",
-    description: "Découvrez les meilleurs joueurs et votre position dans le classement.",
-    icon: "trophy",
-  },
-  {
-    title: "Programme VIP",
-    href: "/vip",
-    description: "Accédez à des avantages exclusifs en devenant membre VIP.",
-    icon: "star",
+    title: "Acheter des points",
+    href: "/buy-points",
+    description: "Achetez des points pour participer aux jeux et soutenir des causes.",
+    icon: "shop",
   },
 ];
 
@@ -124,16 +124,6 @@ export function MainNav({ className }: MainNavProps) {
               ))}
             </ul>
           </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href="/help" legacyBehavior passHref>
-            <NavigationMenuLink className={cn(
-              "h-10 px-4 py-2 text-base hover:text-accent-foreground inline-flex items-center justify-center rounded-md font-medium transition-colors hover:bg-accent focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
-              pathname === "/help" ? "bg-accent text-accent-foreground" : "transparent"
-            )}>
-              Aide
-            </NavigationMenuLink>
-          </Link>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
