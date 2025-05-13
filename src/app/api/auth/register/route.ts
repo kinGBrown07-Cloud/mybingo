@@ -69,7 +69,7 @@ export async function POST(req: Request) {
       
       // Tentative d'inscription très simplifiée
       // Récupérer l'URL du site depuis les variables d'environnement
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mybingo.reussirafrique.com';
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mybingoo.com';
       console.log('URL du site pour la redirection:', siteUrl);
       
       const { data: authData, error: authError } = await supabase.auth.signUp({
