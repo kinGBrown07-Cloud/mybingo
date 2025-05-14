@@ -105,12 +105,17 @@ export async function POST(req: Request) {
       // Créer l'utilisateur dans la base de données Prisma
       if (authData.user) {
         try {
+          console.log('Tentative de création de l\'utilisateur dans Prisma avec ID:', authData.user.id);
+          console.log('Vérification si l\'utilisateur existe déjà dans Prisma...');
           // Vérifier si l'utilisateur existe déjà dans Prisma
           const existingUser = await prisma.user.findUnique({
             where: { email: data.email }
           });
           
+          console.log('Résultat de la recherche dans Prisma:', existingUser ? 'Utilisateur trouvé' : 'Utilisateur non trouvé');
+          
           if (!existingUser) {
+            console.log('Création d\'un nouvel utilisateur dans Prisma...');
             // Créer l'utilisateur dans Prisma
             const newUser = await prisma.user.create({
               data: {
@@ -150,10 +155,27 @@ export async function POST(req: Request) {
           }
         } catch (prismaError) {
           console.error('Erreur lors de la création de l\'utilisateur dans Prisma:', prismaError);
+          console.error('Détails de l\'erreur Prisma:', JSON.stringify(prismaError, null, 2));
+          
+          // Vérifier si c'est une erreur de connexion à la base de données
+          if (prismaError instanceof Error && prismaError.message.includes('connect')) {
+            console.error('Problème de connexion à la base de données détecté');
+          }
+          
+          // Vérifier si c'est une erreur de contrainte unique
+          if (prismaError instanceof Error && prismaError.message.includes('Unique constraint')) {
+            console.error('Violation de contrainte unique détectée');
+          }
+          
           // Ne pas bloquer l'inscription si la création dans Prisma échoue
           // Une tâche de synchronisation pourrait être mise en place ultérieurement
         }
       }
+      
+      // Vérifier si l'email a bien été envoyé par Supabase
+      console.log('Vérification du statut d\'envoi d\'email:', authData.user?.identities?.[0]?.identity_data);
+      console.log('Email confirmé:', authData.user?.email_confirmed_at ? 'Oui' : 'Non');
+      console.log('Redirection vers:', `/auth/email-sent?email=${encodeURIComponent(data.email)}`);
       
       // Si nous arrivons ici, l'inscription a réussi
       return NextResponse.json({
