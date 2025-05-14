@@ -69,8 +69,12 @@ export async function POST(req: Request) {
       
       // Tentative d'inscription très simplifiée
       // Récupérer l'URL du site depuis les variables d'environnement
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mybingoo.com';
+      // Utiliser NEXT_PUBLIC_APP_URL comme fallback car il est défini deux fois dans le fichier .env
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://www.mybingoo.com';
       console.log('URL du site pour la redirection:', siteUrl);
+      console.log('Variables d\'environnement disponibles pour les URLs:');
+      console.log('NEXT_PUBLIC_SITE_URL:', process.env.NEXT_PUBLIC_SITE_URL);
+      console.log('NEXT_PUBLIC_APP_URL:', process.env.NEXT_PUBLIC_APP_URL);
       
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: data.email,
@@ -96,6 +100,23 @@ export async function POST(req: Request) {
       
       if (authError) {
         console.error('Erreur lors de l\'inscription Supabase:', authError);
+        console.error('Détails de l\'erreur Supabase:', JSON.stringify(authError, null, 2));
+        console.error('Code d\'erreur:', authError.status);
+        console.error('Message d\'erreur:', authError.message);
+        
+        // Vérifier si l'erreur est liée à un email déjà utilisé
+        if (authError.message?.includes('email') && authError.message?.includes('already')) {
+          return NextResponse.json(
+            { error: 'Cette adresse email est déjà utilisée. Veuillez vous connecter ou utiliser une autre adresse email.' },
+            { status: 400 }
+          );
+        }
+        
+        // Vérifier si l'erreur est liée à une URL de redirection non autorisée
+        if (authError.message?.includes('redirect') || authError.message?.includes('URL')) {
+          console.error('Erreur possible de redirection. Vérifiez les URL autorisées dans le dashboard Supabase.');
+        }
+        
         return NextResponse.json(
           { error: 'Erreur d\'inscription: ' + authError.message },
           { status: 400 }
