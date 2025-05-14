@@ -30,7 +30,7 @@ export async function sendVerificationEmail(email: string, token: string) {
   const mailOptions = {
     from: {
       name: process.env.NEXT_PUBLIC_APP_NAME || 'Bingoo',
-      address: process.env.SMTP_FROM || 'nobeco@reussirafrique.com'
+      address: process.env.SMTP_FROM || 'contact@mybingoo.com'
     },
     to: email,
     subject: 'Vérification de votre compte Bingoo',

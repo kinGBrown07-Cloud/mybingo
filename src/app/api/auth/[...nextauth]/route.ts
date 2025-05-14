@@ -113,7 +113,7 @@ export const authOptions: AuthOptions = {
       // Allow callbacks to both production and development URLs
       const allowedCallbacks = [
         'https://lucky-bingoo.vercel.app',
-        'https://www.mybingo.reussirafrique.com',
+        'https://www.mybingoo.com',
         baseUrl
       ];
       if (allowedCallbacks.some(callback => url.startsWith(callback))) {

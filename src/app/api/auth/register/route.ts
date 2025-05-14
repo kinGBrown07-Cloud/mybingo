@@ -160,15 +160,31 @@ export async function POST(req: Request) {
           // Vérifier si c'est une erreur de connexion à la base de données
           if (prismaError instanceof Error && prismaError.message.includes('connect')) {
             console.error('Problème de connexion à la base de données détecté');
+            
+            // Essayer de supprimer l'utilisateur dans Supabase Auth pour éviter un état incohérent
+            try {
+              console.log('Tentative de suppression de l\'utilisateur dans Supabase Auth pour éviter un état incohérent...');
+              await supabase.auth.admin.deleteUser(authData.user.id);
+              console.log('Utilisateur supprimé dans Supabase Auth');
+              
+              return NextResponse.json(
+                { error: 'Erreur lors de la création de l\'utilisateur dans la base de données. Veuillez réessayer.' },
+                { status: 500 }
+              );
+            } catch (deleteError) {
+              console.error('Erreur lors de la suppression de l\'utilisateur dans Supabase Auth:', deleteError);
+            }
           }
           
           // Vérifier si c'est une erreur de contrainte unique
           if (prismaError instanceof Error && prismaError.message.includes('Unique constraint')) {
             console.error('Violation de contrainte unique détectée');
+            // Dans ce cas, l'utilisateur existe déjà dans Prisma mais pas dans Supabase Auth
+            // C'est un état incohérent qui devrait être géré par un processus de synchronisation
           }
           
-          // Ne pas bloquer l'inscription si la création dans Prisma échoue
-          // Une tâche de synchronisation pourrait être mise en place ultérieurement
+          // Nous continuons le processus d'inscription même si la création dans Prisma échoue
+          // Mais nous enregistrons l'erreur pour une investigation ultérieure
         }
       }
       
@@ -176,6 +192,15 @@ export async function POST(req: Request) {
       console.log('Vérification du statut d\'envoi d\'email:', authData.user?.identities?.[0]?.identity_data);
       console.log('Email confirmé:', authData.user?.email_confirmed_at ? 'Oui' : 'Non');
       console.log('Redirection vers:', `/auth/email-sent?email=${encodeURIComponent(data.email)}`);
+      
+      // Vérifier explicitement si l'email a été envoyé
+      if (!authData.user) {
+        console.error('Erreur: Aucun utilisateur n\'a été créé dans Supabase Auth');
+        return NextResponse.json(
+          { error: 'Erreur lors de la création de l\'utilisateur. Veuillez réessayer.' },
+          { status: 500 }
+        );
+      }
       
       // Si nous arrivons ici, l'inscription a réussi
       return NextResponse.json({
